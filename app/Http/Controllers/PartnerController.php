@@ -30,8 +30,8 @@ class PartnerController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required',
-            'contact_information' => 'required'
+            'name' => 'required|max:255',
+            'contact_information' => 'required|max:255'
         ]);
 
         Partner::create($validatedData);

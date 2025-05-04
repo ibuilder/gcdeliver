@@ -31,12 +31,13 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required',
+            'name' => 'required|max:255',
             'description' => 'required',
             'start_date' => 'required|date',
-            'end_date' => 'required|date'
+            'end_date' => 'required|date',
+            'partner_id' => 'required'
         ]);
-
+        
         Project::create($validatedData);
 
         return redirect()->route('projects.index');

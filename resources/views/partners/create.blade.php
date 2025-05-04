@@ -13,11 +13,19 @@
             </ul>
         </div>
     @endif
-</div>
 
-<form action="{{ route('partners.store') }}" method="POST">
-    @csrf
-    @include('partners._form')
-    <button type="submit">Create Partner</button>
-</form>
+    <form action="{{ route('partners.store') }}" method="POST">
+        @csrf
+        <div>
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" required>
+        </div>
+        <div>
+            <label for="contact_information">Contact Information</label>
+            <input type="text" name="contact_information" id="contact_information" required>
+        </div>
+        <button type="submit">Create Partner</button>
+    </form>
+
+</div>
 @endsection
