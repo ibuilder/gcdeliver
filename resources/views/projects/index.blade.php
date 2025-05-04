@@ -9,6 +9,7 @@
     <h1>Projects</h1>
     <a href="{{ route('projects.create') }}">Create Project</a>
 
+
     <table>
         <thead>
             <tr>
@@ -17,6 +18,7 @@
                 <th>Description</th>
                 <th>Start Date</th>
                 <th>End Date</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -27,6 +29,9 @@
                     <td>{{ $project->description }}</td>
                     <td>{{ $project->start_date }}</td>
                     <td>{{ $project->end_date }}</td>
+                    <td>
+                        <a href="{{ route('projects.show', $project->id) }}">View</a>
+                    </td>
                 </tr>
             @endforeach
         </tbody>

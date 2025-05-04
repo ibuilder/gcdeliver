@@ -1,4 +1,3 @@
-blade
 <div>
     <a href="{{ route('daily_reports.create') }}">Create Daily Report</a>
 

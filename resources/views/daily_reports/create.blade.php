@@ -1,4 +1,3 @@
-blade
 <div>
     <h1>Create Daily Report</h1>
 

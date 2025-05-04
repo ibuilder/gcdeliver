@@ -12,9 +12,24 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $query = Project::query();
 
-        return view('projects.index', ['projects' => $projects]);
+        // Filtering
+        if (request('search')) {
+            $searchTerm = '%' . request('search') . '%';
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', $searchTerm);
+                $q->orWhere('description', 'like', $searchTerm);
+            });
+        }
+
+
+        // Sorting
+        $sortField = request('sort', 'id');
+        $sortDirection = request('direction', 'desc');
+        $query->orderBy($sortField, $sortDirection);
+
+        return view('projects.index', ['projects' => $query->paginate(10)->withQueryString()]);
     }
 
     /**
@@ -35,36 +50,49 @@ class ProjectController extends Controller
             'description' => 'required',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
-            'partner_id' => 'required'
+            'location' => 'required'
         ]);
-        
+
         Project::create($validatedData);
 
-        return redirect()->route('projects.index');
+        return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $project = Project::findOrFail($id);
+        return view('projects.show', ['project' => $project]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
-    {
-        //
+    {   
+        $project = Project::findOrFail($id);
+        return view('projects.edit', ['project' => $project]);
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        //
+    {   
+        $validatedData = $request->validate([
+            'name' => 'required|max:255',
+            'description' => 'required',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'location' => 'required'
+        ]);
+
+        $project = Project::findOrFail($id);
+        $project->update($validatedData);
+
+        return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
     }
 
     /**

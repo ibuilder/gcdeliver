@@ -1,32 +1,53 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <h1>Create Item</h1>
+<div class="container">
+    <h1>Create Item</h1>
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form action="{{ route('items.store') }}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" name="name" id="name" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="specifications">Specifications:</label>
-                <textarea name="specifications" id="specifications" class="form-control" required></textarea>
-            </div>
-            <div class="form-group"> <label for="lead_time">Lead Time:</label> <input type="text" name="lead_time" id="lead_time" class="form-control" required> </div>
-            <div class="form-group"> <label for="status">Status:</label> <input type="text" name="status" id="status" class="form-control" required> </div>
-            <button type="submit" class="btn btn-primary">Create</button>
-        </form>
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     </div>
+    @endif
+
+    <form action="{{ route('items.store') }}" method="POST">
+        @csrf
+        <div class="form-group">
+            <label for="project_id">Project ID:</label>
+            <input type="text" name="project_id" id="project_id" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea name="description" id="description" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="spec_section">Spec Section:</label>
+            <input type="text" name="spec_section" id="spec_section" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="unit">Unit:</label>
+            <input type="text" name="unit" id="unit" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" name="quantity" id="quantity" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="unit_price">Unit Price:</label>
+            <input type="number" name="unit_price" id="unit_price" class="form-control" required>
+        </div>
+        <div class="form-group"> <label for="lead_time">Lead Time:</label> <input type="text" name="lead_time" id="lead_time" class="form-control" required> </div>
+        <div class="form-group"> <label for="status">Status:</label> <input type="text" name="status" id="status" class="form-control" required> </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+        <a href="{{ route('items.index') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
 @endsection

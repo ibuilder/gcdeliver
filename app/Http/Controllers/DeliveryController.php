@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\Delivery;
 
 class DeliveryController extends Controller
@@ -12,30 +13,56 @@ class DeliveryController extends Controller
      */
     public function index()
     {
-        $deliveries = Delivery::all();
+        $search = request('search');
+        $sort = request('sort');
 
-        return view('deliveries.index', compact('deliveries'));
+        $deliveries = Delivery::query();
+
+        if ($search) {
+            $deliveries->where(function ($query) use ($search) {
+                $query->where('title', 'like', "%{$search}%")
+                    ->orWhere('location', 'like', "%{$search}%")
+                    ->orWhere('id', 'like', "%{$search}%");
+            });
+        }
+
+        $deliveries->orderBy($sort ? $sort : 'id', $sort == 'id' ? 'desc' : 'asc');
+
+        $deliveries = $deliveries->paginate(10);
+
+        return view('deliveries.index', ['deliveries' => $deliveries]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new delivery.
      */
     public function create()
     {
         return view('deliveries.create');
     }
 
-    /**
+     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
+      $validatedData = $request->validate([
+          'project_id' => 'required',
+          'title' => 'required|string|max:255',
+          'date' => 'required|date',
+          'time' => 'required|string',
+          'location' => 'required|string|max:255',
+      ]);
+
         $validatedData = $request->validate([
-            'scheduled_date' => 'required',
-            'time_slot' => 'required',
+            'project_id' => 'required',
+            'title' => 'required',
+            'date' => 'required',
+            'time' => 'required',
             'location' => 'required',
-            'unload_duration' => 'required'
-        
+            'unload_duration' => 'required',
+            'title' => 'required',
+            'project_id' => 'required'
 
         ]);
         Delivery::create($validatedData);
@@ -46,22 +73,39 @@ class DeliveryController extends Controller
      * Display the specified resource.
      */
     public function show(string $id)
-    {
-        //
-    }
+        {
+            $delivery = Delivery::findOrFail($id);
+            return view('deliveries.show', compact('delivery'));
+        }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified delivery.
      */
-    public function edit(string $id)
-    {
-        //
+    public function edit(string $id){
+        $delivery = Delivery::findOrFail($id);
+        return view('deliveries.edit', compact('delivery'));
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
+    {   
+        $delivery = Delivery::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'project_id' => 'required',
+            'title' => 'required',
+            'date' => 'required',
+            'time' => 'required',
+            'location' => 'required',
+            'unload_duration' => 'required',
+        ]);
+
+        $delivery->update($validatedData);
+
+        return redirect()->route('deliveries.index');
+    }
     {
         //
     }

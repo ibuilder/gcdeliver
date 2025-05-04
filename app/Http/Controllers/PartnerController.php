@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Partner;
 use Illuminate\Http\Request;
 
+
 class PartnerController extends Controller
 {
     /**
@@ -12,9 +13,28 @@ class PartnerController extends Controller
      */
     public function index()
     {
-      $partners = Partner::all();
-      return view('partners.index', ['partners' => $partners]);
-  }
+        $search = request('search');
+        $sort = request('sort');
+
+        $partners = Partner::query();
+
+        if ($search) {
+
+            $partners->where('name', 'like', "%{$search}%")
+                     ->orWhere('address', 'like', "%{$search}%")
+                     ->orWhere('contact_person', 'like', "%{$search}%")
+                     ->orWhere('phone_number', 'like', "%{$search}%")
+                     ->orWhere('email', 'like', "%{$search}%");
+        }
+
+        if ($sort) {
+            $partners->orderBy($sort, request('order', 'asc'));
+        } else {
+            $partners->orderBy('id', 'desc');
+        }
+        $partners = $partners->paginate(10);
+        return view('partners.index', ['partners' => $partners]);
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -30,8 +50,11 @@ class PartnerController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'name' => 'required|max:255',
-            'contact_information' => 'required|max:255'
+            'name' => 'required',
+            'address' => 'required',
+            'contact_person' => 'required',
+            'phone_number' => 'required',
+            'email' => 'required'
         ]);
 
         Partner::create($validatedData);
@@ -43,7 +66,9 @@ class PartnerController extends Controller
      */
     public function show(string $id)
     {
-        //
+      $partner = Partner::findOrFail($id);
+
+      return view('partners.show', ['partner' => $partner]);
     }
 
     /**

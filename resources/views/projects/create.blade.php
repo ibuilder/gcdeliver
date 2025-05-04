@@ -30,6 +30,10 @@
             <textarea name="description" id="description"></textarea>
         </div>
         <div>
+            <label for="location">Location:</label>
+            <input type="text" name="location" id="location" required>
+        </div>
+        <div>
             <label for="start_date">Start Date:</label>
             <input type="date" name="start_date" id="start_date" required>
         </div>
@@ -39,6 +43,7 @@
         </div>
 
         <button type="submit">Create Project</button>
+        <a href="{{ route('projects.index') }}"><button type="button">Cancel</button></a>
     </form>
 </body>
 </html>

@@ -13,63 +13,71 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        $schedules = Schedule::all();
+        $search = request('search');
+        $sort = request('sort');
+
+        $schedules = Schedule::query()
+            ->when($search, function ($query, $search) {
+                $query->where('task_name', 'like', '%' . $search . '%');
+            })
+            ->when($sort, function ($query, $sort) {
+                $parts = explode('|', $sort);
+                $column = $parts[0];
+                $direction = $parts[1];
+                $query->orderBy($column, $direction);
+            })
+             ->when(in_array($sort,['progress']),function($query) use ($sort){
+                $query->orderByRaw("CAST(progress as UNSIGNED) DESC");})
+            ->when(!$sort, function ($query) {
+                $query->orderBy('id', 'desc');
+            })
+            ->paginate(10);
+
         return view('schedules.index', ['schedules' => $schedules]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create() : \Illuminate\View\View
+    public function create(): \Illuminate\View\View
     {
         return view('schedules.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) : \Illuminate\Http\RedirectResponse
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $validatedData = $request->validate([
-            'name' => 'required|string',
-            'description' => 'required|string',
+            'project_id' => 'required|integer',
+            'task_name' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
-            'project_id' => 'nullable|integer'
+            'duration' => 'required|string',
+            'progress' => 'required|string',
         ]);
         Schedule::create($validatedData);
         return redirect()->route('schedules.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(string $id): \Illuminate\View\View
     {
-        //
+        $schedule = Schedule::find($id);
+        return view('schedules.show', ['schedule' => $schedule]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(string $id): \Illuminate\View\View
     {
-        //
+        $schedule = Schedule::find($id);
+        return view('schedules.edit', ['schedule' => $schedule]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): \Illuminate\Http\RedirectResponse
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $schedule = Schedule::find($id);
+        $validatedData = $request->validate([
+            'project_id' => 'required|integer',
+            'task_name' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'duration' => 'required|string',
+            'progress' => 'required|string',
+        ]);
+        $schedule->update($validatedData);
+        return redirect()->route('schedules.index');
     }
 }
