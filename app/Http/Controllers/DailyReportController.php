@@ -1,7 +1,9 @@
+php
 <?php
 
 namespace App\Http\Controllers;
 
+use App\Models\DailyReport;
 use Illuminate\Http\Request;
 
 class DailyReportController extends Controller
@@ -11,7 +13,7 @@ class DailyReportController extends Controller
      */
     public function index()
     {
-        //
+        return view('daily_reports.index', ['dailyReports' => DailyReport::all()]);
     }
 
     /**
@@ -19,7 +21,7 @@ class DailyReportController extends Controller
      */
     public function create()
     {
-        //
+        return view('daily_reports.create');
     }
 
     /**
@@ -27,7 +29,17 @@ class DailyReportController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'project_id' => 'required',
+            'date' => 'required|date',
+            'weather_conditions' => 'required|string',
+            'notes' => 'required|string',
+            'manpower_information' => 'required|string',
+        ]);
+
+        DailyReport::create($validatedData);
+
+        return redirect()->route('daily_reports.index');
     }
 
     /**

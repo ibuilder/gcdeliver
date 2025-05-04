@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('schedules', function (Blueprint $table) {
-            $table->id();            
-            $table->unsignedBigInteger('project_id');
-            $table->string('task_name');
+            $table->id();
+            $table->string('name');
+            $table->text('description');
             $table->date('start_date');
             $table->date('end_date');
-            $table->integer('duration');
-            $table->integer('progress');
-            $table->timestamps();            
-            $table->foreign('project_id')->references('id')->on('projects');
+            $table->unsignedBigInteger('project_id')->nullable();
+            $table->timestamps();
+            $table->foreign('project_id')->nullable()->references('id')->on('projects');
+
 
         });
     }

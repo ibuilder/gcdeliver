@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Delivery;
 
 class DeliveryController extends Controller
 {
@@ -11,7 +12,9 @@ class DeliveryController extends Controller
      */
     public function index()
     {
-        //
+        $deliveries = Delivery::all();
+
+        return view('deliveries.index', compact('deliveries'));
     }
 
     /**
@@ -19,7 +22,7 @@ class DeliveryController extends Controller
      */
     public function create()
     {
-        //
+        return view('deliveries.create');
     }
 
     /**
@@ -27,7 +30,16 @@ class DeliveryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'scheduled_date' => 'required',
+            'time_slot' => 'required',
+            'location' => 'required',
+            'unload_duration' => 'required'
+        
+
+        ]);
+        Delivery::create($validatedData);
+        return redirect()->route('deliveries.index');
     }
 
     /**

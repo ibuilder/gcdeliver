@@ -1,3 +1,4 @@
+php
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -12,12 +13,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('daily_reports', function (Blueprint $table) {
-            $table->id();            
+            $table->id();
             $table->unsignedBigInteger('project_id');
-            $table->date('report_date');
-            $table->string('weather_conditions');
+            $table->date('date');
+            $table->text('weather_conditions');
             $table->text('notes')->nullable();
-            $table->timestamps();            
+            $table->text('manpower_information')->nullable();
+            $table->timestamps();
             $table->foreign('project_id')->references('id')->on('projects');
         });
     }

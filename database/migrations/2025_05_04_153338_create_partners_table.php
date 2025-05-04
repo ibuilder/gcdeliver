@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('partners', function (Blueprint $table)
         {
-            $table->id();
+            $table->id()->autoIncrement()->unsigned();
             $table->string('name');
-            $table->string('contact_person');
-            $table->string('contact_email');
-            $table->string('contact_phone');
+            $table->text('contact_information');
             $table->timestamps();
         });
     }

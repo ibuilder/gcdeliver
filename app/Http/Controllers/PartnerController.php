@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Partner;
 use Illuminate\Http\Request;
 
 class PartnerController extends Controller
@@ -11,15 +12,16 @@ class PartnerController extends Controller
      */
     public function index()
     {
-        //
-    }
+      $partners = Partner::all();
+      return view('partners.index', ['partners' => $partners]);
+  }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+      return view('partners.create');
     }
 
     /**
@@ -27,7 +29,13 @@ class PartnerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'contact_information' => 'required'
+        ]);
+
+        Partner::create($validatedData);
+        return redirect()->route('partners.index');
     }
 
     /**

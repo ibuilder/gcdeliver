@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();           
             $table->unsignedBigInteger('daily_report_id');
             $table->foreign('daily_report_id')->references('id')->on('daily_reports');
-            $table->string('trade');
+            $table->string('role');
             $table->integer('quantity');
             $table->timestamps();
         });

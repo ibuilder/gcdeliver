@@ -12,8 +12,8 @@ class Partner extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name', 'contact_person', 'contact_email', 'contact_phone'
+    protected $fillable = ['id',
+        'name', 'contact_information'
     ];
 
     public function items(): BelongsToMany

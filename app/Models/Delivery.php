@@ -12,14 +12,10 @@ class Delivery extends Model
     use HasFactory;
 
     protected $fillable = [
-        'project_id',
-        'title',
-        'date',
-        'unload_duration',
-        'location',
+        'scheduled_date',
         'time_slot',
-        'status',
-        'notes',
+        'location',
+        'unload_duration',
     ];
 
     public function project(): BelongsTo

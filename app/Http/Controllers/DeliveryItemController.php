@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DeliveryItem;
 use Illuminate\Http\Request;
 
 class DeliveryItemController extends Controller
@@ -11,7 +12,10 @@ class DeliveryItemController extends Controller
      */
     public function index()
     {
-        //
+        $deliveryItems = DeliveryItem::all();
+
+        return view('delivery_items.index', compact('deliveryItems'));
+
     }
 
     /**
@@ -19,7 +23,7 @@ class DeliveryItemController extends Controller
      */
     public function create()
     {
-        //
+        return view('delivery_items.create');
     }
 
     /**

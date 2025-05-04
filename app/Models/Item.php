@@ -15,13 +15,11 @@ class Item extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'project_id',
+    protected $fillable = [ 
         'name',
-        'description',
-        'spec_section',
+        'specifications',
         'lead_time',
-        'status',
+        'status'
     ];
 
     /**

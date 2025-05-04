@@ -10,12 +10,12 @@ class Schedule extends Model
     use HasFactory;
 
     protected $fillable = [
-        'project_id',
-        'task_name',
+        'id',
+        'name',
+        'description',
         'start_date',
         'end_date',
-        'duration',
-        'progress',
+        'project_id',
     ];
 
     public function project()

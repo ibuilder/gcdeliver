@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityDependency;
 use Illuminate\Http\Request;
 
 class ActivityDependencyController extends Controller
@@ -11,7 +12,9 @@ class ActivityDependencyController extends Controller
      */
     public function index()
     {
-        //
+        $activityDependencies = ActivityDependency::all();//
+
+        return view('activity_dependencies.index', compact('activityDependencies'));
     }
 
     /**
@@ -19,7 +22,7 @@ class ActivityDependencyController extends Controller
      */
     public function create()
     {
-        //
+        return view('activity_dependencies.create');//
     }
 
     /**
@@ -27,7 +30,14 @@ class ActivityDependencyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'activity_id' => 'required',
+            'dependent_activity_id' => 'required',
+        ]);
+
+        ActivityDependency::create($validatedData);
+
+        return redirect()->route('activity_dependencies.index');
     }
 
     /**

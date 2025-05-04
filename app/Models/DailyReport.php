@@ -1,3 +1,4 @@
+php
 <?php
 
 namespace App\Models;
@@ -12,10 +13,12 @@ class DailyReport extends Model
     use HasFactory;
     
     protected $fillable = [
+        'id',
         'project_id',
-        'report_date',
+        'date',
         'weather_conditions',
         'notes',
+        'manpower_information',
     ];
 
     public function project(): BelongsTo
@@ -28,4 +31,3 @@ class DailyReport extends Model
         return $this->hasMany(ManpowerEntry::class);
     }
 }
-
