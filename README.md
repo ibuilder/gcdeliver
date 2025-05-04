@@ -205,6 +205,11 @@ We have plans to further enhance gcDeliver with the following features:
 
 ## License
 
+## Deployment
+
+To deploy the application, you can use the deploy command. This command will run all the necessary optimizations and database migrations to deploy the application.
+
+
 gcDeliver is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 ## Contact
