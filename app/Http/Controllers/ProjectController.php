@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Models\Project;
 
 class ProjectController extends Controller
@@ -24,10 +25,20 @@ class ProjectController extends Controller
             });
         }
 
-
         // Sorting
         $sortField = request('sort', 'id');
-        $sortDirection = request('direction', 'desc');
+        $sortDirection = 'desc';
+
+        if (request('direction') !== null){
+             $sortDirection = request('direction');
+        }
+       
+        if (!in_array($sortField, ['id', 'name', 'start_date', 'end_date'])) {
+            $sortField = 'id';
+            $sortDirection = 'desc';
+        }
+
+
         $query->orderBy($sortField, $sortDirection);
 
         return view('projects.index', ['projects' => $query->paginate(10)->withQueryString()]);
@@ -55,10 +66,17 @@ class ProjectController extends Controller
             'end_date' => 'required|date',
             'location' => 'required'
         ]);
+        try {
+            Project::create($validatedData);
+        } catch (\Exception $e) {
+            Log::error('Error creating project: ' . $e->getMessage());
+            return redirect()->route('projects.index')->with('error', 'Error creating project.');
+        }
 
-        Project::create($validatedData);
+       
 
         return redirect()->route('projects.index')->with('success', 'Project created successfully.');
+        
     }
 
     /**
@@ -66,7 +84,7 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('view', Project::class);
+        $this->authorize('view', [Project::class, $id]);
         $project = Project::findOrFail($id);
         return view('projects.show', ['project' => $project]);
     }
@@ -95,8 +113,14 @@ class ProjectController extends Controller
             'location' => 'required'
         ]);
 
-        $project = Project::findOrFail($id);
-        $project->update($validatedData);
+        try {
+            $project = Project::findOrFail($id);
+            $project->update($validatedData);
+        } catch (\Exception $e) {
+            Log::error('Error updating project: ' . $e->getMessage());
+            return redirect()->route('projects.index')->with('error', 'Error updating project.');
+        }
+        
 
         return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
     }

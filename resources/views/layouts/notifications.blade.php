@@ -1,4 +1,3 @@
-blade
 <div>
     @if (empty($notifications))
         <p>No new notifications</p>

@@ -15,32 +15,36 @@ class ItemController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Item::class);
-        $search = request('search');
-        $sort = request('sort');
+        $query = Item::query();
 
-        $items = Item::query();
-
-        if ($search) {
-            $items->where('name', 'like', '%' . $search . '%')
-                ->orWhere('spec_section', 'like', '%' . $search . '%');
+        // Filtering
+        if (request('search')) {
+            $searchTerm = '%' . request('search') . '%';
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', $searchTerm)
+                    ->orWhere('spec_section', 'like', $searchTerm);
+            });
         }
 
-        if ($sort) {
-            $items->orderBy($sort, request('direction', 'asc'));
-        }else{
-            $items->orderBy('id', 'desc');
+        // Sorting
+        $sortField = request('sort', 'id');
+        $sortDirection = request('direction', 'desc');
 
-
+        if (!in_array($sortField, ['id', 'name', 'spec_section', 'unit', 'quantity', 'unit_price', 'lead_time'])) {
+            $sortField = 'id';
+            $sortDirection = 'desc';
         }
 
-        return view('items.index', ['items' => $items->paginate(10)]);
+        $query->orderBy($sortField, $sortDirection);
+
+        return view('items.index', ['items' => $query->paginate(10)->withQueryString()]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
-    {
+    { 
         $this->authorize('create', Item::class);
         return view('items.create');
     }
@@ -50,24 +54,31 @@ class ItemController extends Controller
         */
     public function store(Request $request)
     {
-        $this->authorize('create', Item::class);
-        $validatedData = $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-            'spec_section' => 'required|string|max:255',
-            'unit' => 'required|string',
-            'lead_time' => 'required|string',
-            'status' => 'required|string',
-        ]);
-        
-        $item = Item::create($validatedData);
+        try {
+            $this->authorize('create', Item::class);
+            $validatedData = $request->validate([
+                'project_id' => 'required|exists:projects,id',
+                'name' => 'required|string|max:255',
+                'description' => 'required|string|max:255',
+                'spec_section' => 'required|string|max:255',
+                'unit' => 'required|string',
+                'quantity' => 'required|numeric',
+                'unit_price' => 'required|numeric',
+                'lead_time' => 'required|string',
+                'status' => 'required|string',
+            ]);
 
-        $users = User::whereIn('role', ['admin', 'manager'])->get();
+            $item = Item::create($validatedData);
 
-        foreach ($users as $user) {
-            $user->notify(new NewItemNotification($item->name));
+            $users = User::whereIn('role', ['admin', 'manager'])->get();
+
+            foreach ($users as $user) {
+                $user->notify(new NewItemNotification($item->name));
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Error creating the item: ' . $e->getMessage()])->withInput();
         }
+
 
 
         return redirect()->route('items.index');
@@ -75,28 +86,42 @@ class ItemController extends Controller
 
     public function edit(string $id)
     {
-        $this->authorize('update', Item::class);
         $item = Item::findOrFail($id);
+        $this->authorize('update', $item);
+
         return view('items.edit', ['item' => $item]);
     }
+
     public function update(Request $request, string $id)
     {
-        $this->authorize('update', Item::class);
+        try {
         $item = Item::findOrFail($id);
+        $this->authorize('update', $item);
+
         $validatedData = $request->validate([
             'project_id' => 'required|exists:projects,id',
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'spec_section' => 'required|string|max:255',
+            'unit' => 'required|string',
+            'quantity' => 'required|numeric',
+            'unit_price' => 'required|numeric',
+            'lead_time' => 'required|string',
+            'status' => 'required|string',
         ]);
-        $item->update($request->all());
+            
+        $item->update($validatedData);
+
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Error updating the item: ' . $e->getMessage()])->withInput();
+        }
         return redirect()->route('items.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        $this->authorize('view', Item::class);
         $item = Item::findOrFail($id);
+        $this->authorize('view', $item);
 
         return view('items.show', ['item' => $item]);
     }
