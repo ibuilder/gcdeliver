@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\DailyReport;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class DailyReportController extends Controller
@@ -57,7 +59,18 @@ class DailyReportController extends Controller
             'manpower_information' => 'required|string',
         ]);
 
-        DailyReport::create($validatedData);
+        $dailyReport = DailyReport::create($validatedData);
+
+        $adminsAndManagers = User::whereIn('role', ['admin', 'manager'])->get();
+
+        foreach ($adminsAndManagers as $user) {
+            $user->notifications()->create([
+                'type' => 'daily_report_created',
+                'notifiable_type' => 'App\Models\DailyReport',
+                'notifiable_id' => $dailyReport->id,
+                'data' => 'New daily report created: ' . $dailyReport->id,
+            ]);
+        }
 
         return redirect()->route('daily_reports.index');
     }

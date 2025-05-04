@@ -1,4 +1,10 @@
 <div>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ route('partners.index') }}">Partners</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ $partner->name }}</li>
+        </ol>
+    </nav>
     <h1>Partner Details</h1>
 
     <p><strong>ID:</strong> {{ $partner->id }}</p>

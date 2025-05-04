@@ -1,4 +1,9 @@
 <div>
+    <div>
+        <a href="{{ route('daily_reports.index') }}">Daily Reports</a>
+        >
+        <a href="{{ route('daily_reports.show', $dailyReport->id) }}">{{ $dailyReport->report_date }}</a> > Edit
+    </div>
     <h1>Edit Daily Report</h1>
 
     <form method="POST" action="{{ route('daily_reports.update', $dailyReport->id) }}">

@@ -1,4 +1,10 @@
 <div>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ route('items.index') }}">Items</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ $item->name }}</li>
+        </ol>
+    </nav>
     <h1>Item Details</h1>
 
     <p><strong>ID:</strong> {{ $item->id }}</p>

@@ -8,6 +8,10 @@
 <body>
     <h1>Create New Project</h1>
 
+    <div>
+        <a href="{{ route('projects.index') }}">Projects</a> > Create
+    </div>
+
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>

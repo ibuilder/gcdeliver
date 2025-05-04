@@ -1,4 +1,8 @@
 <div>
+    <div>
+        <a href="{{ route('daily_reports.index') }}">Daily Reports</a> / Create
+    </div>
+
     <h1>Create Daily Report</h1>
 
     @if ($errors->any())

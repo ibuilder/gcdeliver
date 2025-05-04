@@ -1,9 +1,10 @@
-php
 <?php
 
 namespace App\Http\Controllers;
 
 use App\Models\Schedule;
+use App\Models\User;
+use App\Notifications\NewScheduleNotification;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -53,7 +54,14 @@ class ScheduleController extends Controller
             'duration' => 'required|string',
             'progress' => 'required|string',
         ]);
-        Schedule::create($validatedData);
+        $schedule= Schedule::create($validatedData);
+        $users = User::whereIn('role', ['admin', 'manager'])->get();
+
+        foreach ($users as $user) {
+            $user->notify(new NewScheduleNotification(
+                'New schedule created', $schedule->task_name
+            ));
+        }
         return redirect()->route('schedules.index');
     }
 

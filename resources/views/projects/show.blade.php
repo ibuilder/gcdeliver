@@ -1,4 +1,9 @@
 <div>
+    <div>
+        <a href="{{ route('projects.index') }}">Projects</a>
+        / {{ $project->name }}
+    </div>
+    
     <h1>Project Details</h1>
 
     <p><strong>ID:</strong> {{ $project->id }}</p>

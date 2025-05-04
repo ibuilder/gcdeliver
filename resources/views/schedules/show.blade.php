@@ -1,4 +1,10 @@
 <div>
+    <nav>
+        <ol>
+            <li><a href="{{ route('schedules.index') }}">Schedules</a></li>
+            <li>{{ $schedule->task_name }}</li>
+        </ol>
+    </nav>
     <h1>Schedule Details</h1>
 
     <p><strong>ID:</strong> {{ $schedule->id }}</p>

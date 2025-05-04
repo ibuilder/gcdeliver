@@ -1,4 +1,8 @@
 <div>
+    <div>
+        <a href="{{ route('deliveries.index') }}">Deliveries</a> > Create
+    </div>
+
     <h1>Create New Delivery</h1>
 
     @if ($errors->any())

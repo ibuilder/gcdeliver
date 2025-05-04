@@ -1,4 +1,7 @@
 <div>
+    <div>
+        <a href="{{ route('deliveries.index') }}">Deliveries</a> / <a href="{{ route('deliveries.show', $delivery->id) }}">{{ $delivery->title }}</a> / Edit
+    </div>
     <form method="POST" action="{{ route('deliveries.update', $delivery->id) }}">
         @csrf
         @method('PUT')

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\User;
+use App\Notifications\NewItemNotification;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
@@ -60,6 +62,13 @@ class ItemController extends Controller
         ]);
         
         $item = Item::create($validatedData);
+
+        $users = User::whereIn('role', ['admin', 'manager'])->get();
+
+        foreach ($users as $user) {
+            $user->notify(new NewItemNotification($item->name));
+        }
+
 
         return redirect()->route('items.index');
     }

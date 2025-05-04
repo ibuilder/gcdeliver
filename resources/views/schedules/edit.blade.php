@@ -1,4 +1,9 @@
 <div>
+    <div>
+        <a href="{{ route('schedules.index') }}">Schedules</a> >
+        <a href="{{ route('schedules.show', $schedule->id) }}">{{ $schedule->task_name }}</a> >
+        Edit
+    </div>
     <h1>Edit Schedule</h1>
 
     <form method="POST" action="{{ route('schedules.update', $schedule->id) }}">

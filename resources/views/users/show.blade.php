@@ -1,5 +1,10 @@
 <div>
+    <nav>
+        <a href="{{ route('users.index') }}">Users</a> > {{ $user->name }}
+    </nav>
+
     <h1>User Details</h1>
+
 
     <p><strong>ID:</strong> {{ $user->id }}</p>
     <p><strong>Name:</strong> {{ $user->name }}</p>
@@ -17,10 +22,6 @@
         </a>
     </div>
 </div>
-
-
-
-
 
 
 

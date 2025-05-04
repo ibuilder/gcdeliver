@@ -1,4 +1,8 @@
 <div>
+    <div>
+        <a href="{{ route('projects.index') }}">Projects</a> > <a href="{{ route('projects.show', $project->id) }}">{{ $project->name }}</a> > Edit
+    </div>
+    
     <h1>Edit Project</h1>
 
     <form method="POST" action="{{ route('projects.update', $project->id) }}">

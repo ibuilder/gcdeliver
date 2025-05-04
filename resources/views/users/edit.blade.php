@@ -1,4 +1,11 @@
 <div>
+    <nav>
+        <ol>
+            <li><a href="{{ route('users.index') }}">Users</a></li>
+            <li><a href="{{ route('users.show', $user->id) }}">{{$user->name}}</a></li>
+            <li>Edit</li>
+        </ol>
+    </nav>
     <h1>Edit User</h1>
 
     <form method="POST" action="{{ route('users.update', $user->id) }}">

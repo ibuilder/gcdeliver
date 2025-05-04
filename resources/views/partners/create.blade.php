@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ route('partners.index') }}">Partners</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Create</li>
+        </ol>
+    </nav>
     <h1>Create New Partner</h1>
 
     <div>
@@ -42,5 +48,4 @@
     </div>
 @endsection
 
-</div>
 @endsection

@@ -1,10 +1,12 @@
 <div>
     <a href="{{ route('daily_reports.create') }}">Create Daily Report</a>
 
-    <input type="text" id="filterInput" placeholder="Filter all columns...">
+    <form method="GET" action="{{ route('daily_reports.index') }}">
+        <input type="text" name="search" placeholder="Filter all columns..." value="{{ request('search') }}">
+    </form>
 
-    <table id="dailyReportsTable">
-        <thead>
+    <table>
+         <thead>
         <tr>
             <th>
                 <a href="{{ route('daily_reports.index', ['sort' => 'id', 'direction' => ($sort === 'id' && $direction === 'asc') ? 'desc' : 'asc']) }}">
@@ -30,9 +32,33 @@
                     @endif
                 </a>
             </th>
-            <th><a href="{{ route('daily_reports.index', ['sort' => 'report_date', 'direction' => ($sort === 'report_date' && $direction === 'asc') ? 'desc' : 'asc']) }}">
+            <th>
+                <a href="{{ route('daily_reports.index', ['sort' => 'report_date', 'direction' => ($sort === 'report_date' && $direction === 'asc') ? 'desc' : 'asc']) }}">
                     Date
                     @if ($sort === 'report_date')
+                        @if ($direction === 'asc')
+                            &#9650;
+                        @else
+                            &#9660;
+                        @endif
+                    @endif
+                </a>
+            </th>
+            <th>
+                <a href="{{ route('daily_reports.index', ['sort' => 'weather_conditions', 'direction' => ($sort === 'weather_conditions' && $direction === 'asc') ? 'desc' : 'asc']) }}">
+                    Weather Conditions
+                    @if ($sort === 'weather_conditions')
+                        @if ($direction === 'asc')
+                            &#9650;
+                        @else
+                            &#9660;
+                        @endif
+                    @endif
+                </a></th>
+            <th>
+                <a href="{{ route('daily_reports.index', ['sort' => 'notes', 'direction' => ($sort === 'notes' && $direction === 'asc') ? 'desc' : 'asc']) }}">
+                    Notes
+                    @if ($sort === 'notes')
                         @if ($direction === 'asc')
                             &#9650;
                         @else
@@ -50,33 +76,10 @@
                 <td>{{ $daily_report->id }}</td>
                 <td>{{ $daily_report->project_id }}</td>
                 <td>{{ $daily_report->report_date }}</td>
-                <td>{{ $daily_report->weather_conditions }}</td>
-                <td>{{ $daily_report->notes }}</td>
+                 <td>{{ $daily_report->weather_conditions }}</td>
+                 <td>{{ $daily_report->notes }}</td>
             </tr>
         @endforeach
         </tbody>
     </table>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const filterInput = document.getElementById('filterInput');
-        const table = document.getElementById('dailyReportsTable');
-        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-        filterInput.addEventListener('input', function () {
-            const filter = filterInput.value.toUpperCase();
-            for (let i = 0; i < rows.length; i++) {
-                let rowData = '';
-                const cells = rows[i].getElementsByTagName('td');
-                for (let j = 0; j < cells.length; j++) {
-                    rowData += cells[j].textContent.toUpperCase() + ' ';
-                }
-                if (rowData.indexOf(filter) > -1) {
-                    rows[i].style.display = '';
-                } else {
-                    rows[i].style.display = 'none';
-                }
-            }
-        });
-    });
-</script>

@@ -1,4 +1,8 @@
 <div>
+    <div>
+        <a href="{{ route('schedules.index') }}">Schedules</a> > Create
+    </div>
+
     <h1>Create New Schedule</h1>
 
     @if ($errors->any())

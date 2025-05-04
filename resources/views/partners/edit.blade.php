@@ -1,4 +1,11 @@
 <div>
+    <nav>
+        <ol>
+            <li><a href="{{ route('partners.index') }}">Partners</a></li>
+            <li><a href="{{ route('partners.show', $partner->id) }}">{{ $partner->name }}</a></li>
+            <li>Edit</li>
+        </ol>
+    </nav>
     <h1>Edit Partner</h1>
 
     <form method="POST" action="{{ route('partners.update', $partner->id) }}">

@@ -1,4 +1,10 @@
 <div>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ route('daily_reports.index') }}">Daily Reports</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ $daily_report->report_date }}</li>
+        </ol>
+    </nav>
     <h1>Daily Report Details</h1>
 
     <p><strong>ID:</strong> {{ $daily_report->id }}</p>

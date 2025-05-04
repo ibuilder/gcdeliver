@@ -1,4 +1,9 @@
 <div>
+    <div>
+        <a href="{{ route('items.index') }}">Items</a> /
+        <a href="{{ route('items.show', $item->id) }}">{{ $item->name }}</a> /
+        <span>Edit</span>
+    </div>
     <h1>Edit Item</h1>
     <form method="POST" action="{{ route('items.update', $item->id) }}">
         @csrf
