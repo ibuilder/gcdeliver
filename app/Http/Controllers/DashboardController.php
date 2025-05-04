@@ -9,9 +9,10 @@ use App\Models\Item;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class DashboardController extends Controller
-{
+{   use AuthorizesRequests;
 
 
     public function index()
