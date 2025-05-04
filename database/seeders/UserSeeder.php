@@ -4,30 +4,32 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
 
 class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $faker = Faker::create();
 
-        $roles = Role::all();
-
-        foreach ($roles as $role) {
+        // Create the admin user
+        $adminRole = DB::table('roles')->where('name', 'admin')->first();
+        if ($adminRole) {
             User::create([
-                'role_id' => $role->id,
-                'name' => $faker->name,
-                'email' => $faker->unique()->safeEmail,
-                'password' => Hash::make('password'), 
+                'role_id' => $adminRole->id,
+                'name' => 'Admin User',
+                'email' => 'admin@example.com',
+                'password' => Hash::make('adminpassword'),
             ]);
         }
+
+
+        
+
     }
 }
