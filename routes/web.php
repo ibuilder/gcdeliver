@@ -12,6 +12,8 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ManpowerEntryController;
+use App\Http\Controllers\GanttChartController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -61,3 +63,7 @@ Route::get('/activity_dependencies', [ActivityDependencyController::class, 'inde
 Route::resource('manpower_entries', ManpowerEntryController::class);
 Route::get('/manpower_entries/create', [ManpowerEntryController::class, 'create'])->name('manpower_entries.create');
 Route::get('/manpower_entries', [ManpowerEntryController::class, 'index'])->name('manpower_entries.index');
+
+Route::get('/gantt-chart', [GanttChartController::class, 'generateGanttChart'])->name('gantt_chart');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

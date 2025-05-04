@@ -1,24 +1,28 @@
-{{-- this view will display the list of users --}}
+@extends('layouts.app')
 
-<a href="{{ route('users.create') }}">Create User</a>
+@section('content')
+    {{-- this view will display the list of users --}}
 
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role ID</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($users as $user)
+    <a href="{{ route('users.create') }}">Create User</a>
+
+    <table>
+        <thead>
             <tr>
-                <td>{{ $user->id }}</td>
-                <td>{{ $user->name }}</td>
-                <td>{{ $user->email }}</td>
-                <td>{{ $user->role_id }}</td>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role ID</th>
             </tr>
-        @endforeach
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach ($users as $user)
+                <tr>
+                    <td>{{ $user->id }}</td>
+                    <td>{{ $user->name }}</td>
+                    <td>{{ $user->email }}</td>
+                    <td>{{ $user->role_id }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+@endsection

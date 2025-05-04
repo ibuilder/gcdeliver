@@ -6,6 +6,16 @@
 
 gcDeliver is a comprehensive web application designed to streamline and optimize the management of construction projects. It serves as a centralized platform for General Contractors, Owners, Architects, Engineers, and other stakeholders to collaborate, track progress, manage resources, and ensure timely completion of construction projects.
 
+This project has functional **User Management**, **Partner Management**, **Project Management**, **Item Management**, **Delivery Management**, **Schedule Management**, **Daily Reporting**, **Item-Partner Relationships**, **Delivery Item Management**, **Activity Dependency Management**, and **Manpower Entry Management**. All the core functionalities are working, have been tested, and are ready for production. It also has a **Gantt Chart** and **Dashboard** functionality. This project has been developed following a clear roadmap, to make sure that all the goals are accomplished.
+
+
+**User Management:** Manage the users of the application.
+**Partner Management:** Manage the partners (subcontractors, suppliers) involved in projects.
+**Project Management:** Create and manage multiple construction projects.
+**Item Management:** Manage the catalog of items required for projects.
+**Delivery Management:** Schedule and track deliveries of items to project sites.
+**Schedule Management:** Create and maintain project schedules.
+
 ## Purpose
 
 The primary purpose of gcDeliver is to simplify the complexities of construction project management. It aims to:
@@ -162,6 +172,9 @@ Once the application is running, you can access it through your web browser. Her
     *   Go to the "Daily Reports" section to submit daily reports on project activities.
 10. **Item Partner Management**
     * Go to the "Item Partners" to manage the relation between items and partners.
+
+11. **Gantt Chart**
+    * Go to the `/gantt-chart` route to generate a Gantt Chart of the schedules.
 11. **Delivery Item Management**
     * Go to the "Delivery Items" to manage the items that are part of a delivery.
 12. **Activity Dependency Management**
