@@ -14,6 +14,8 @@ class UserController extends Controller
 
     public function index()
     {
+        $this->authorize('viewAny', User::class);
+        
         $search = request('search');
         $sort = request('sort');
 
@@ -45,7 +47,7 @@ class UserController extends Controller
     */
     public function create()
     {
-
+        $this->authorize('create', User::class);
         return view('users.create');
     }
 
@@ -54,6 +56,7 @@ class UserController extends Controller
     */
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
         $validated = $request->validate([
             'name' => 'required',
             'email' => 'required|email',
@@ -73,6 +76,7 @@ class UserController extends Controller
     */
     public function show(string $id)
     {
+        $this->authorize('view', User::class);
         $user = User::find($id);
         return view('users.show', ['user' => $user]);
     }
@@ -83,6 +87,7 @@ class UserController extends Controller
     */
     public function edit(string $id)
     {
+        $this->authorize('update', User::class);
         $user = User::find($id);
         return view('users.edit', ['user' => $user]);
     }
@@ -92,6 +97,7 @@ class UserController extends Controller
     */
     public function update(Request $request, string $id)
     {
+        $this->authorize('update', User::class);
         $validated = $request->validate([
             'name' => 'required',
             'email' => 'required|email',
@@ -107,6 +113,7 @@ class UserController extends Controller
     */
     public function destroy(string $id)
     {
+        $this->authorize('delete', User::class);
         $user = User::find($id);
         $user->delete();
         return to_route('users.index');

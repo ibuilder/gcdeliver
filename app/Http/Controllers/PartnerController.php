@@ -13,6 +13,7 @@ class PartnerController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Partner::class);
         $search = request('search');
         $sort = request('sort');
 
@@ -39,11 +40,13 @@ class PartnerController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+     public function create()
     {
-      return view('partners.create');
+        $this->authorize('create', Partner::class);
+        return view('partners.create');
     }
-
+    
+    
     /**
      * Store a newly created resource in storage.
      */
@@ -57,13 +60,15 @@ class PartnerController extends Controller
             'email' => 'required'
         ]);
 
+        $this->authorize('create', Partner::class);
         Partner::create($validatedData);
         return redirect()->route('partners.index');
     }
-
+    
     /**
      * Display the specified resource.
      */
+
     public function show(string $id)
     {
       $partner = Partner::findOrFail($id);
@@ -74,24 +79,30 @@ class PartnerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+     public function edit(string $id)
     {
-        //
+        $partner = Partner::findOrFail($id);
+        $this->authorize('update', $partner);
+        return view('partners.edit', ['partner' => $partner]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Partner $partner)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'address' => 'required',
+            'contact_person' => 'required',
+            'phone_number' => 'required',
+            'email' => 'required'
+        ]);
+        $this->authorize('update', $partner);
+        $partner->update($validatedData);
+        return redirect()->route('partners.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+
+
 }

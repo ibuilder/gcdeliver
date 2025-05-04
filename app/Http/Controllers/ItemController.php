@@ -12,6 +12,7 @@ class ItemController extends Controller
     */
     public function index()
     {
+        $this->authorize('viewAny', Item::class);
         $search = request('search');
         $sort = request('sort');
 
@@ -38,7 +39,7 @@ class ItemController extends Controller
      */
     public function create()
     {
-
+        $this->authorize('create', Item::class);
         return view('items.create');
     }
 
@@ -47,6 +48,7 @@ class ItemController extends Controller
         */
     public function store(Request $request)
     {
+        $this->authorize('create', Item::class);
         $validatedData = $request->validate([
             'project_id' => 'required|exists:projects,id',
             'name' => 'required|string|max:255',
@@ -64,11 +66,13 @@ class ItemController extends Controller
 
     public function edit(string $id)
     {
+        $this->authorize('update', Item::class);
         $item = Item::findOrFail($id);
         return view('items.edit', ['item' => $item]);
     }
     public function update(Request $request, string $id)
     {
+        $this->authorize('update', Item::class);
         $item = Item::findOrFail($id);
         $validatedData = $request->validate([
             'project_id' => 'required|exists:projects,id',
@@ -82,6 +86,7 @@ class ItemController extends Controller
      */
     public function show(string $id)
     {
+        $this->authorize('view', Item::class);
         $item = Item::findOrFail($id);
 
         return view('items.show', ['item' => $item]);

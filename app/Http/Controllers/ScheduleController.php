@@ -13,6 +13,7 @@ class ScheduleController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Schedule::class);
         $search = request('search');
         $sort = request('sort');
 
@@ -37,11 +38,13 @@ class ScheduleController extends Controller
     }
     public function create(): \Illuminate\View\View
     {
+        $this->authorize('create', Schedule::class);
         return view('schedules.create');
     }
 
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
+        $this->authorize('create', Schedule::class);
         $validatedData = $request->validate([
             'project_id' => 'required|integer',
             'task_name' => 'required|string',
@@ -56,12 +59,14 @@ class ScheduleController extends Controller
 
     public function show(string $id): \Illuminate\View\View
     {
+        $this->authorize('view', Schedule::class);
         $schedule = Schedule::find($id);
         return view('schedules.show', ['schedule' => $schedule]);
     }
 
     public function edit(string $id): \Illuminate\View\View
     {
+        $this->authorize('update', Schedule::class);
         $schedule = Schedule::find($id);
         return view('schedules.edit', ['schedule' => $schedule]);
     }
@@ -69,6 +74,7 @@ class ScheduleController extends Controller
     public function update(Request $request, string $id): \Illuminate\Http\RedirectResponse
     {
         $schedule = Schedule::find($id);
+        $this->authorize('update', $schedule);
         $validatedData = $request->validate([
             'project_id' => 'required|integer',
             'task_name' => 'required|string',

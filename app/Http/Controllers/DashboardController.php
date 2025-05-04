@@ -12,6 +12,11 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:view-dashboard');
+    }
+
     public function index()
     {
         $totalProjects = Project::count();

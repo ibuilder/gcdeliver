@@ -26,10 +26,19 @@ class Project extends Model
     {
         return $this->hasMany(Delivery::class);
     }
-    public function items(): HasMany {
+
+    public function items(): HasMany
+    {
         return $this->hasMany(Item::class);
     }
-    public function schedules(): HasMany {
+
+    public function schedules(): HasMany
+    {
         return $this->hasMany(Schedule::class);
+    }
+
+    public function dailyReports(): HasMany
+    {
+        return $this->hasMany(DailyReport::class);
     }
 }

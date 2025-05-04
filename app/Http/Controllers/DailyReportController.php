@@ -12,6 +12,7 @@ class DailyReportController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', DailyReport::class);
         $search = request('search');
         $sort = request('sort');
         $direction = request('direction', 'desc');
@@ -38,6 +39,7 @@ class DailyReportController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', DailyReport::class);
         return view('daily_reports.create');
     }
 
@@ -46,6 +48,7 @@ class DailyReportController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', DailyReport::class);
         $validatedData = $request->validate([
             'project_id' => 'required',
             'date' => 'required|date',
@@ -64,6 +67,7 @@ class DailyReportController extends Controller
      */
     public function show(string $id)
     {
+        $this->authorize('view', DailyReport::class);
         $dailyReport = DailyReport::findOrFail($id);
         return view('daily_reports.show', compact('dailyReport'));
     }
@@ -73,6 +77,7 @@ class DailyReportController extends Controller
      */
     public function edit(string $id)
     {
+        $this->authorize('update', DailyReport::class);
         $dailyReport = DailyReport::findOrFail($id);
         return view('daily_reports.edit', compact('dailyReport'));
     }
@@ -82,6 +87,7 @@ class DailyReportController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $this->authorize('update', DailyReport::class);
         $dailyReport = DailyReport::findOrFail($id);
 
         $validatedData = $request->validate([
@@ -105,6 +111,7 @@ class DailyReportController extends Controller
      */
     public function destroy(string $id)
     {
+        $this->authorize('delete', DailyReport::class);
         //
     }
 }

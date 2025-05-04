@@ -34,15 +34,20 @@ class Item extends Model
     {
         return $this->belongsTo(Project::class);
     }
-
-    public function deliveries(): BelongsToMany
+    
+    /**
+     * Get the delivery that owns the item.
+     */
+    public function delivery(): BelongsTo
     {
-        return $this->belongsToMany(Delivery::class, 'delivery_items');
+        return $this->belongsTo(Delivery::class);
     }
     
     public function partners(): BelongsToMany
     {
-        return $this->belongsToMany(Partner::class, 'item_partners');
+        return $this->belongsToMany(Partner::class, 'item_partners')
+        ->withPivot('id')
+        ->withTimestamps();
     }
 
 }

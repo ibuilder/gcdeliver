@@ -20,11 +20,6 @@ class Schedule extends Model
         'project_id',
     ];
 
-    public function project(): BelongsTo
-    {
-        return $this->belongsTo(Project::class);
-    }
-
     public function dependencies()
     {
         return $this->belongsToMany(Schedule::class, 'activity_dependencies', 'schedule_id', 'dependency_id')
@@ -35,6 +30,11 @@ class Schedule extends Model
     {
         return $this->belongsToMany(Schedule::class, 'activity_dependencies', 'dependency_id', 'schedule_id')
             ->withTimestamps();
+    }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
     }
 }
 

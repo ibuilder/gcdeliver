@@ -11,12 +11,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class DailyReport extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
+        'project_id',
         'id',
-        'report_date',
+        'date',
         'weather_conditions',
-       'notes',
+        'notes',
         'manpower_information',
     ];
 
