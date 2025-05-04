@@ -20,18 +20,25 @@ class ScheduleSeeder extends Seeder
         $projects = Project::all();
 
         foreach ($projects as $project) {
-            for ($i = 0; $i < 10; $i++) {
-                $startDate = $faker->dateTimeBetween('now', '+1 year');
-                $endDate = $faker->dateTimeBetween($startDate, '+1 year');
-                $duration = $faker->numberBetween(1, 10);
-                Schedule::create([
+            for ($i = 0; $i < 3; $i++) {
+                $startDate = $faker->dateTimeBetween('now', '+2 years');
+                $endDate = $faker->dateTimeBetween($startDate, '+2 years');
+                $schedule = Schedule::create([
                     'project_id' => $project->id,
-                    'task_name' => $faker->sentence(3),
+                    'task_name' => $faker->sentence,
                     'start_date' => $startDate,
                     'end_date' => $endDate,
-                    'duration' => $duration,
+                    'duration' => $faker->numberBetween(1, 5),
                     'progress' => $faker->numberBetween(0, 100),
                 ]);
+
+                $dependencies = Schedule::where('project_id', $project->id)
+                    ->where('id', '!=', $schedule->id)
+                    ->inRandomOrder()
+                    ->take($faker->numberBetween(1, 2))
+                    ->pluck('id');
+
+                $schedule->dependencies()->attach($dependencies);
             }
         }
     }

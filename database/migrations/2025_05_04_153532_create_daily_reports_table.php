@@ -1,4 +1,3 @@
-php
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -15,12 +14,13 @@ return new class extends Migration
         Schema::create('daily_reports', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('project_id');
-            $table->date('date');
+            $table->date('report_date');
             $table->text('weather_conditions');
             $table->text('notes')->nullable();
             $table->text('manpower_information')->nullable();
             $table->timestamps();
             $table->foreign('project_id')->references('id')->on('projects');
+
         });
     }
 

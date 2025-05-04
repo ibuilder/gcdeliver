@@ -18,14 +18,11 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             PartnerSeeder::class,
             ProjectSeeder::class,
-            ItemSeeder::class,
             DeliverySeeder::class,
+            ItemSeeder::class,
+
             ScheduleSeeder::class,
             DailyReportSeeder::class,
-            ItemPartnerSeeder::class,
-            DeliveryItemSeeder::class,
-            ActivityDependencySeeder::class,
-            ManpowerEntrySeeder::class
         ]);
     }
 }

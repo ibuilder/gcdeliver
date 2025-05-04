@@ -20,12 +20,16 @@ class DailyReportSeeder extends Seeder
         $projects = Project::all();
 
         foreach ($projects as $project) {
-            for ($i = 0; $i < 10; $i++) {
+            for ($i = 0; $i < 3; $i++) {
+                $reportDate = $faker->dateTimeBetween('now', '+1 year');
+                $weatherConditions = $faker->randomElement(['Sunny', 'Cloudy', 'Rainy', 'Windy']);
+                $notes = $faker->text;
+
                 DailyReport::create([
                     'project_id' => $project->id,
-                    'report_date' => $faker->dateTimeBetween('-1 month', 'now'),
-                    'weather_conditions' => $faker->randomElement(['Sunny', 'Cloudy', 'Rainy', 'Windy']),
-                    'notes' => $faker->optional()->text,
+                    'report_date' => $reportDate,
+                    'weather_conditions' => $weatherConditions,
+                    'notes' => $notes,
                 ]);
             }
         }

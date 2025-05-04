@@ -20,9 +20,7 @@ class PartnerSeeder extends Seeder
         for ($i = 0; $i < 5; $i++) {
             Partner::create([
                 'name' => $faker->company,
-                'contact_person' => $faker->name,
-                'contact_email' => $faker->unique()->safeEmail,
-                'contact_phone' => $faker->phoneNumber,
+                'contact_information' => $faker->email,
             ]);
         }
     }

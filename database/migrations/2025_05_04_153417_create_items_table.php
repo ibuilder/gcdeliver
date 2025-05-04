@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('project_id')->constrained();
             $table->string('name');
-            $table->text('specifications');
-            $table->string('lead_time');
+            $table->text('description');
+            $table->string('spec_section');
+            $table->integer('lead_time');
             $table->string('status');
             $table->timestamps();
-
+            
 
         });
     }

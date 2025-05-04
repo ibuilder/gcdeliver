@@ -12,12 +12,16 @@ return new class extends Migration
     public function up(): void
     {
        Schema::create('deliveries', function (Blueprint $table) {
-            $table->id()->unsigned();
-            $table->date('scheduled_date');
+            $table->id();
+            $table->foreignId('project_id')->constrained();
+            $table->string('title');
+            $table->date('date');
             $table->string('time_slot');
             $table->text('location');
-            $table->string('unload_duration');
+            $table->integer('unload_duration');
             $table->timestamps();
+            $table->string('status');
+            $table->text('notes')->nullable();
             
         });
     }

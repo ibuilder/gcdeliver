@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('activity_dependencies', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('activity_id');
-            $table->unsignedBigInteger('dependent_activity_id');
+            $table->unsignedBigInteger('schedule_id');
+            $table->unsignedBigInteger('dependency_id');
             
-            $table->foreign('activity_id')->references('id')->on('schedules');
-            $table->foreign('dependent_activity_id')->references('id')->on('schedules');
+            $table->foreign('schedule_id')->references('id')->on('schedules');
+            $table->foreign('dependency_id')->references('id')->on('schedules');
 
-            $table->timestamps();
+            $table->timestamps();            
         });
     }
 

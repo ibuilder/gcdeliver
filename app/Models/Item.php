@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class Item extends Model
 {
     use HasFactory;
+    
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -17,9 +20,11 @@ class Item extends Model
      */
     protected $fillable = [ 
         'name',
-        'specifications',
+        'description',
+        'spec_section',
         'lead_time',
-        'status'
+        'status',
+        'project_id'
     ];
 
     /**
@@ -32,10 +37,12 @@ class Item extends Model
 
     public function deliveries(): BelongsToMany
     {
-        return $this->belongsToMany(Delivery::class);
+        return $this->belongsToMany(Delivery::class, 'delivery_items');
     }
+    
     public function partners(): BelongsToMany
     {
-        return $this->belongsToMany(Partner::class);
+        return $this->belongsToMany(Partner::class, 'item_partners');
     }
+
 }

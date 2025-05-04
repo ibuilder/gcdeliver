@@ -16,7 +16,6 @@ class ProjectSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
-        $statuses = ['pending', 'in progress', 'completed'];
 
         for ($i = 0; $i < 3; $i++) {
             $startDate = $faker->dateTimeBetween('now', '+1 year');
@@ -25,9 +24,8 @@ class ProjectSeeder extends Seeder
                 'name' => $faker->company . ' Project',
                 'description' => $faker->text,
                 'start_date' => $startDate,
-                'end_date' => $endDate,
-                'status' => $faker->randomElement($statuses),
+                'end_date' => $endDate
             ]);
         }
-    }
+    }    
 }

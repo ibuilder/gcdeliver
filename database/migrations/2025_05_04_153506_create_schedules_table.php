@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description');
+            $table->string('task_name');
+            $table->unsignedInteger('duration');
+            $table->unsignedInteger('progress');
             $table->date('start_date');
             $table->date('end_date');
+            
             $table->unsignedBigInteger('project_id')->nullable();
             $table->timestamps();
             $table->foreign('project_id')->nullable()->references('id')->on('projects');

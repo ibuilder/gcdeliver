@@ -1,9 +1,9 @@
-php
 <?php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\ActivityDependency;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,10 +14,9 @@ class DailyReport extends Model
     
     protected $fillable = [
         'id',
-        'project_id',
-        'date',
+        'report_date',
         'weather_conditions',
-        'notes',
+       'notes',
         'manpower_information',
     ];
 
@@ -29,5 +28,10 @@ class DailyReport extends Model
     public function manpowerEntries(): HasMany
     {
         return $this->hasMany(ManpowerEntry::class);
+    }
+
+    public function activityDependencies(): HasMany
+    {
+        return $this->hasMany(ActivityDependency::class);
     }
 }

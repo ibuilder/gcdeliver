@@ -1,4 +1,3 @@
-php
 <?php
 
 namespace App\Http\Controllers;
@@ -13,7 +12,25 @@ class DailyReportController extends Controller
      */
     public function index()
     {
-        return view('daily_reports.index', ['dailyReports' => DailyReport::all()]);
+        $search = request('search');
+        $sort = request('sort');
+        $direction = request('direction', 'desc');
+
+        $query = DailyReport::query();
+
+        if ($search) {
+            $query->where('id', 'like', "%{$search}%")
+                  ->orWhere('project_id', 'like', "%{$search}%")
+                  ->orWhere('report_date', 'like', "%{$search}%")
+                  ->orWhere('weather_conditions', 'like', "%{$search}%")
+                  ->orWhere('notes', 'like', "%{$search}%");
+        }
+        if($sort){
+            $query->orderBy($sort, $direction);
+        } else {
+            $query->orderBy('id', 'desc');
+        }
+        return view('daily_reports.index', ['daily_reports' => $query->paginate(10)]);
     }
 
     /**
@@ -47,7 +64,8 @@ class DailyReportController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $dailyReport = DailyReport::findOrFail($id);
+        return view('daily_reports.show', compact('dailyReport'));
     }
 
     /**
@@ -55,7 +73,8 @@ class DailyReportController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $dailyReport = DailyReport::findOrFail($id);
+        return view('daily_reports.edit', compact('dailyReport'));
     }
 
     /**
@@ -63,7 +82,22 @@ class DailyReportController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $dailyReport = DailyReport::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'project_id' => 'required',
+            'report_date' => 'required|date',
+            'weather_conditions' => 'required|string',
+            'notes' => 'required|string',
+        ]);
+
+        $dailyReport->update([
+            'project_id' => $validatedData['project_id'],
+            'report_date' => $validatedData['report_date'],
+            'weather_conditions' => $validatedData['weather_conditions'],
+            'notes' => $validatedData['notes'],
+        ]);
+        return redirect()->route('daily_reports.index');
     }
 
     /**
