@@ -1,11 +1,11 @@
 <?php
 
 use App\Console\Kernel as AppConsoleKernel;
-use Illuminate\Contracts\Console\Kernel as IlluminateContractsConsoleKernel;
-
+use Illuminate\Contracts\Console\Kernel as IlluminateContractsConsoleKernel; 
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
- 
+
+
 define('LARAVEL_START', microtime(true));
 
 /*
@@ -43,16 +43,15 @@ $app = require_once __DIR__.'/bootstrap/app.php';
 | Each available console command is an entry in the list below. The
 | console application will automatically gather each of these classes
 | so we don't have to worry about adding them manually. Enjoy!
-|
-*/
-$kernel = $app->make(IlluminateContractsConsoleKernel::class);
+| */
+$kernel = $app->make(AppConsoleKernel::class);
 
-$status = $kernel->handle( 
-    $input = new ArgvInput,
-    new ConsoleOutput
-);
-
-/*
+$status = $kernel->handle(
+    $input = new ArgvInput(),
+    new ConsoleOutput()
+);    
+    
+/*   
 |--------------------------------------------------------------------------
 | Shutdown The Application
 |--------------------------------------------------------------------------

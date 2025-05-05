@@ -5,8 +5,9 @@ use Illuminate\Contracts\Console\Kernel as IlluminateContractsConsoleKernel;
 use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use App\Http\Kernel as AppHttpKernel;
+use Illuminate\Contracts\Debug\ExceptionHandler as IlluminateContractsDebugExceptionHandler;
 use Illuminate\Contracts\Debug\ExceptionHandler as ExceptionHandler;
-use App\Exceptions\Handler as AppExceptionsHandler;
+use App\Exceptions\Handler;
 
 $app = new Application(dirname(__DIR__));
 
@@ -28,7 +29,7 @@ $app->singleton(
 
 $app->singleton(
     ExceptionHandler::class,
-    AppExceptionsHandler::class
+    Handler::class
 );
 
 $app->singleton(IlluminateContractsConsoleKernel::class, AppConsoleKernel::class);
