@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Project;
+use Illuminate\View\View;
 
 class ProjectController extends Controller
 {
@@ -57,14 +58,17 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         
-        $this->authorize('create', Project::class);
+        $this->authorize('store', Project::class);
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'description' => 'required',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
+            'partner_id' => 'required|exists:partners,id',
             'location' => 'required']);
-        return redirect()->route('projects.index')->with('success', 'Project created successfully.');
+        $project = Project::create($validatedData);
+
+        return redirect()->route('projects.show', $project)->with('success', 'Project created successfully.');
         
     }
 

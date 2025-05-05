@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 
+use App\Models\Role;
+
+/**
+ * This class is the controller for the User model. It handles requests related to users, such as listing, creating, updating, and deleting users.
+ */
 class UserController extends Controller
 {
     /**
@@ -20,29 +25,31 @@ class UserController extends Controller
         $sortField = request('sort', 'id');
         $sortDirection = request('direction', 'desc');
 
-        $users = User::query();
-
-        if ($search) {
-            $searchTerm = '%' . $search . '%';
-            $users->where(function ($query) use ($searchTerm) {
-                $query->where('name', 'like', $searchTerm)
-                      ->orWhere('email', 'like', $searchTerm)
-                      ->orWhereHas('role', function ($roleQuery) use ($searchTerm) {
-                          $roleQuery->where('name', 'like', $searchTerm);
-                      });
+        $users = User::query()
+        ->when($search, function ($query) use ($search) {
+            $query->where(function ($subQuery) use ($search) {
+                $subQuery->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhereHas('role', function ($roleQuery) use ($search) {
+                        $roleQuery->where('name', 'like', "%{$search}%");
+                    });
             });
+        })
+        ->with('role');
+
         }
+
 
         $validSortFields = ['id', 'name', 'email', 'role'];
         if (in_array($sortField, $validSortFields)) {
             if ($sortField === 'role') {
-                $users->orderBy(Role::select('name')->whereColumn('id', 'users.role_id'), $sortDirection);
+                 $users->orderBy(Role::select('name')->whereColumn('id', 'users.role_id'), $sortDirection);
             } else {
                 $users->orderBy($sortField, $sortDirection);
             }
         }
 
-        return view('users.index', ['users' => $users->paginate(10)->withQueryString()]);
+        return view('users.index', ['users' => $users->with('role')->paginate(10)->withQueryString()]);
     }
 
     /**
@@ -66,10 +73,13 @@ class UserController extends Controller
             'password' => 'required|confirmed|min:8',
             'role_id' => 'required'
         ]);
-        $user = new User($validatedData);
-        $user->password = bcrypt($request->password);
+        $user = new User([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'role_id' => $validatedData['role_id']
+        ]);
+        $user->password = bcrypt($validatedData['password']);
         $user->save();
-    
         return to_route('users.index');
     }
 
