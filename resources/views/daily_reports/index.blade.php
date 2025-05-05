@@ -2,9 +2,12 @@
     <a href="{{ route('daily_reports.create') }}">Create Daily Report</a>
 
     <form method="GET" action="{{ route('daily_reports.index') }}">
-        <input type="text" name="search" placeholder="Filter all columns..." value="{{ request('search') }}">
+         <input type="text" name="search" placeholder="Filter all columns..." value="{{ request('search') }}">
+        <input type="text" name="manpower_search" placeholder="Filter by manpower information..." value="{{ request('manpower_search') }}">
+        <button type="submit">Filter</button>
     </form>
-
+    
+    
     <table>
          <thead>
         <tr>
@@ -66,8 +69,6 @@
                         @endif
                     @endif
                 </a></th>
-            <th>Weather Conditions</th>
-            <th>Notes</th>
         </tr>
         </thead>
         <tbody>

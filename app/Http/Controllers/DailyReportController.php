@@ -22,13 +22,19 @@ class DailyReportController extends Controller
             $query = DailyReport::query();
 
             if ($search) {
-                $query->where('id', 'like', "%{$search}%")
+                $query->where(function($q) use ($search){
+                    $q->where('id', 'like', "%{$search}%")
                     ->orWhere('project_id', 'like', "%{$search}%")
                     ->orWhere('report_date', 'like', "%{$search}%")
                     ->orWhere('weather_conditions', 'like', "%{$search}%")
                     ->orWhere('notes', 'like', "%{$search}%");
+                });
+                
             }
-            $allowedSorts = ['id', 'project_id', 'report_date', 'weather_conditions', 'notes'];
+             if ($manpowerSearch = request('manpower_search')) {
+                $query->where('manpower_information', 'like', "%{$manpowerSearch}%");
+            }
+            $allowedSorts = ['id', 'project_id', 'report_date', 'weather_conditions', 'notes', 'manpower_information'];
             if ($sort && in_array($sort, $allowedSorts)) {
                 $query->orderBy($sort, request('direction', 'asc'));
             } else {
@@ -132,6 +138,8 @@ class DailyReportController extends Controller
     public function destroy(string $id)
     {
         $this->authorize('delete', DailyReport::findOrFail($id));
-        //
+        $dailyReport = DailyReport::findOrFail($id);
+        $dailyReport->delete();
+        return redirect()->route('daily_reports.index');
     }
 }

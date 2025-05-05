@@ -2,11 +2,7 @@
 
 @section('content')
     <div>
-        <div>
-            <a href="{{ route('roles.index') }}">Roles</a> / Create
-        </div>
-
-        <h1>Create New Role</h1>
+        <h1>Create New Team</h1>
 
         @if ($errors->any())
             <div>
@@ -18,14 +14,14 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('roles.store') }}">
+        <form action="{{ route('teams.store') }}" method="POST">
             @csrf
             <div>
                 <label for="name">Name:</label>
                 <input type="text" name="name" id="name" required>
             </div>
-            <button type="submit">Create</button>
-            <a href="{{ route('roles.index') }}">Cancel</a>
+            <button type="submit">Create Team</button>
+            <a href="{{ url()->previous() }}">Cancel</a>
         </form>
     </div>
 @endsection

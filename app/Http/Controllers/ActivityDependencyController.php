@@ -45,7 +45,9 @@ class ActivityDependencyController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $activityDependency = ActivityDependency::findOrFail($id);
+
+        return view('activity_dependencies.show', compact('activityDependency'));
     }
 
     /**
@@ -53,7 +55,9 @@ class ActivityDependencyController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $activityDependency = ActivityDependency::findOrFail($id);
+
+        return view('activity_dependencies.edit', compact('activityDependency'));
     }
 
     /**
@@ -61,7 +65,16 @@ class ActivityDependencyController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->validate([
+            'activity_id' => 'required',
+            'dependent_activity_id' => 'required',
+        ]);
+
+        $activityDependency = ActivityDependency::findOrFail($id);
+        $activityDependency->update($validatedData);
+
+        return redirect()->route('activity_dependencies.index');
+
     }
 
     /**
@@ -69,6 +82,9 @@ class ActivityDependencyController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $activityDependency = ActivityDependency::findOrFail($id);
+        $activityDependency->delete();
+
+        return redirect()->route('activity_dependencies.index');
     }
 }

@@ -2,8 +2,8 @@
 
 @section('content')
     <div>
-        <h1>Roles</h1>
-        <a href="{{ route('roles.create') }}">Create New Role</a>
+        <h1>Teams</h1>
+        <a href="{{ route('teams.create') }}">Create New Team</a>
     </div>
 
     <div>
@@ -15,13 +15,13 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($roles as $role)
+                @foreach($teams as $team)
                     <tr>
-                        <td>{{ $role->name }}</td>
+                        <td>{{ $team->name }}</td>
                         <td>
-                            <a href="{{ route('roles.show', $role->id) }}">View</a>
-                            <a href="{{ route('roles.edit', $role->id) }}">Edit</a>
-                            <form action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display: inline;">
+                            <a href="{{ route('teams.show', $team->id) }}">View</a>
+                            <a href="{{ route('teams.edit', $team->id) }}">Edit</a>
+                            <form action="{{ route('teams.destroy', $team->id) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
@@ -33,4 +33,3 @@
         </table>
     </div>
 @endsection
-

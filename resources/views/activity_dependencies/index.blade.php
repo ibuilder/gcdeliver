@@ -1,23 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activity Dependencies</title>
-</head>
-<body>
-    <h1>Activity Dependencies</h1>
+@extends('layouts.app')
 
-    <a href="{{ route('activity_dependencies.create') }}">Create Activity Dependency</a>
+@section('content')
+    <div>
+        <h1>Activity Dependencies</h1>
+        <a href="{{ route('activity_dependencies.create') }}">Create Activity Dependency</a>
+    </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Activity ID</th>
-                <th>Dependent Activity ID</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</body>
-</html>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Activity ID</th>
+                    <th>Dependent Activity ID</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($activityDependencies as $dependency)
+                    <tr>
+                        <td>{{ $dependency->activity_id }}</td>
+                        <td>{{ $dependency->dependent_activity_id }}</td>
+                        <td>
+                            <a href="{{ route('activity_dependencies.show', $dependency->id) }}">View</a>
+                            <a href="{{ route('activity_dependencies.edit', $dependency->id) }}">Edit</a>
+                            <form action="{{ route('activity_dependencies.destroy', $dependency->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+@endsection
