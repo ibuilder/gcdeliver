@@ -135,6 +135,8 @@ return [
     */
 
     'providers' => [
+        \Laravel\Pail\PailServiceProvider::class,
+
         /*
         * Laravel Framework Service Providers...
         */
