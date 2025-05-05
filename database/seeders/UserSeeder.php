@@ -20,13 +20,16 @@ class UserSeeder extends Seeder
         // Create the admin user
         $adminRole = DB::table('roles')->where('name', 'admin')->first();
         if ($adminRole) {
-            User::create([
-                'role_id' => $adminRole->id,
-                'name' => 'Admin User',
-                'email' => 'admin@example.com',
-                'password' => Hash::make('adminpassword'),
-            ]);
+            User::firstOrCreate(
+                ['email' => 'admin@example.com'], // Find by email
+                [
+                    'role_id' => $adminRole->id,
+                    'name' => 'Admin User',
+                    'password' => Hash::make('adminpassword'),
+                ]
+            );
         }
+
 
 
         

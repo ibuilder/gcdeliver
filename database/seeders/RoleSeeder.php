@@ -14,34 +14,49 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        Role::create([
-            'name' => 'admin',
-            'description' => 'Administrator of the system.',
-        ]);
+        $roles = [
+            [
+                'name' => 'admin',
+                'description' => 'Administrator of the system.',
+            ],
+            [
+                'name' => 'manager',
+                'description' => 'Manager of the projects.',
+            ],
+            [
+                'name' => 'General Contractor',
+                'description' => 'Manages the overall construction project and subcontractors.',
+            ],
+            [
+                'name' => 'Owner',
+                'description' => 'The client who owns the project and makes key decisions.',
+            ],
+            [
+                'name' => 'Architect',
+                'description' => 'Designs the building and ensures aesthetic and functional requirements are met.',
+            ],
+            [
+                'name' => 'Engineer',
+                'description' => 'Ensures structural integrity and compliance with engineering standards.',
+            ],
+        ];
 
-        Role::create([
-            'name' => 'manager',
-            'description' => 'Manager of the projects.',
-        ]);
+        foreach ($roles as $roleData) {
+            $this->createRoleIfNotExists($roleData);
+        }
+    }
 
-        Role::create([
-            'name' => 'General Contractor',
-            'description' => 'Manages the overall construction project and subcontractors.',
-        ]);
-
-        Role::create([
-            'name' => 'Owner',
-            'description' => 'The client who owns the project and makes key decisions.',
-        ]);
-
-        Role::create([
-            'name' => 'Architect',
-            'description' => 'Designs the building and ensures aesthetic and functional requirements are met.',
-        ]);
-
-        Role::create([
-            'name' => 'Engineer',
-            'description' => 'Ensures structural integrity and compliance with engineering standards.',
-        ]);
+    /**
+     * Creates a role if it does not already exist.
+     *
+     * @param array $roleData
+     * @return void
+     */
+    private function createRoleIfNotExists(array $roleData): void
+    {
+        Role::firstOrCreate(
+            ['name' => $roleData['name']],
+            ['description' => $roleData['description']]
+        );
     }
 }

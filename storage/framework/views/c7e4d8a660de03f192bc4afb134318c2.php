@@ -1,0 +1,29 @@
+<?php $__env->startSection('content'); ?>
+    <div>
+        <h1>Edit Specification</h1>
+
+        <form method="POST" action="<?php echo e(route('specifications.update', $specification->id)); ?>">
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('PUT'); ?>
+
+            <div>
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" value="<?php echo e($specification->name); ?>" required>
+            </div>
+
+            <div>
+                <label for="description">Description</label>
+                <textarea id="description" name="description" required><?php echo e($specification->description); ?></textarea>
+            </div>
+
+            <div>
+                <label for="project_id">Project ID</label>
+                <input type="number" id="project_id" name="project_id" value="<?php echo e($specification->project_id); ?>" required>
+            </div>
+
+            <button type="submit">Save Changes</button>
+            <a href="<?php echo e(route('specifications.index')); ?>">Cancel</a>
+        </form>
+    </div>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /home/user/gcdeliver/resources/views/specifications/edit.blade.php ENDPATH**/ ?>
