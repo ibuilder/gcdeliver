@@ -1,7 +1,12 @@
 deploy:
   commands:
-    - cd /app && php artisan.php migrate --force
-    - cd /app && php artisan.php db:seed --force
-    - cd /app && php artisan.php config:cache
-    - cd /app && php artisan.php route:cache
-    - cd /app && php artisan.php view:cache
+    - php artisan config:clear
+    - php artisan route:clear
+    - php artisan view:clear
+    - php artisan event:clear
+    - composer dump-autoload
+    - php artisan migrate --force
+    - php artisan db:seed --force
+    - php artisan config:cache
+    - php artisan route:cache
+    - php artisan view:cache
