@@ -1,18 +1,70 @@
-#!/usr/bin/env php
 <?php
 
-use Illuminate\Foundation\Application;
-use Symfony\Component\Console\Input\ArgvInput;
+use App\Console\Kernel as AppConsoleKernel;
+use Illuminate\Contracts\Console\Kernel as IlluminateContractsConsoleKernel;
 
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+ 
 define('LARAVEL_START', microtime(true));
 
-// Register the Composer autoloader...
+/*
+ |--------------------------------------------------------------------------
+ | Register The Auto Loader
+ |--------------------------------------------------------------------------
+ |
+ | Composer provides a convenient, automatically generated class loader for
+ | this application. We just need to utilize it! We'll simply require it
+ | into the script here so that we don't have to worry about manual
+ | loading any of our classes later on. It feels nice to relax.
+ |
+ */
+
 require __DIR__.'/vendor/autoload.php';
 
-// Bootstrap Laravel and handle the command...
-/** @var Application $app */
+/*
+ |--------------------------------------------------------------------------
+ | Bootstrap The Application
+ |--------------------------------------------------------------------------
+ |
+ | Here we will load the environment and create the application instance
+ | that serves as the central piece of this framework. We'll use this
+ | application as an "IoC" container and router for this framework.
+ |
+ */
+
 $app = require_once __DIR__.'/bootstrap/app.php';
 
-$status = $app->handleCommand(new ArgvInput);
+/*
+|--------------------------------------------------------------------------
+| Run The Console Application
+|--------------------------------------------------------------------------
+|
+| Each available console command is an entry in the list below. The
+| console application will automatically gather each of these classes
+| so we don't have to worry about adding them manually. Enjoy!
+|
+*/
+$kernel = $app->make(IlluminateContractsConsoleKernel::class);
+
+$status = $kernel->handle( 
+    $input = new ArgvInput,
+    new ConsoleOutput
+);
+
+/*
+|--------------------------------------------------------------------------
+| Shutdown The Application
+|--------------------------------------------------------------------------
+|
+| Once we have run the application we, will invoke the terminate method
+| which will fire any application termination events and clean up any
+| statics, or file handles that may be open. This is the last step
+| in the lifecycle of the application when it is done processing.
+|
+*/
+
+$kernel->terminate($input, $status);
 
 exit($status);
+
