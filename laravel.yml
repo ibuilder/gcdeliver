@@ -1,6 +1,6 @@
 deploy:
   commands:
-    - composer install --no-dev
+    - composer install
     - composer dump-autoload
     - php artisan config:clear
     - php artisan route:clear
