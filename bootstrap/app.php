@@ -1,37 +1,32 @@
 <?php
 
-use App\Console\Kernel as AppConsoleKernel;
-use Illuminate\Contracts\Console\Kernel as IlluminateContractsConsoleKernel;
+use App\Providers\AuthServiceProvider;
+use Laravel\Ui\UiServiceProvider;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Foundation\Application;
-use Illuminate\Contracts\Http\Kernel as HttpKernel;
-use App\Http\Kernel as AppHttpKernel;
-use Illuminate\Contracts\Debug\ExceptionHandler as IlluminateContractsDebugExceptionHandler;
-use Illuminate\Contracts\Debug\ExceptionHandler as ExceptionHandler;
-use App\Exceptions\Handler;
 
-$app = new Application(dirname(__DIR__));
+$app = Application::configure(basePath: dirname(__DIR__))
+    ->withProviders([
+        AuthServiceProvider::class,
+        UiServiceProvider::class,    ])
+    ->withRouting(
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
+    )
+    ->withExceptions(function (
+        Exceptions $exceptions) {
+        $exceptions->report(function (Throwable $e) {
+            // Handle reporting of exceptions.
+        });
+    })
+    ->withMiddleware(function (Middleware $middleware) {
+    })
+    ->create();
+$app->booted(function () use ($app) {
+    require __DIR__ . '/../routes/web.php';    
+});
 
-/*
-|--------------------------------------------------------------------------
-| Bind Important Interfaces
-|--------------------------------------------------------------------------
-|
-| Next, we need to bind some important interfaces into the container so
-| we will be able to resolve them when needed. The kernels serve the
-| incoming requests to this application from both the web and CLI.
-|
-*/
-
-$app->singleton(
-    HttpKernel::class,
-    AppHttpKernel::class
-);
-
-$app->singleton(
-    ExceptionHandler::class,
-    Handler::class
-);
-
-$app->singleton(IlluminateContractsConsoleKernel::class, AppConsoleKernel::class);
 
 return $app;
+

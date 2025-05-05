@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Partner;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
@@ -11,8 +12,15 @@ class PartnerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_partners_index_view_is_accessible(): void
+    public function setUp(): void
     {
+        parent::setUp();
+        $user = User::factory()->create();
+        $this->actingAs($user);
+    }
+
+    public function test_partners_index_view_is_accessible(): void
+    {   
         $response = $this->get(route('partners.index'));
 
         $response->assertOk();

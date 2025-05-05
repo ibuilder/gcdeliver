@@ -23,31 +23,29 @@ class ProjectController extends Controller
                 $q->where('name', 'like', $searchTerm);
                 $q->orWhere('description', 'like', $searchTerm);
             });
+        }  
+
+        $sortField = request('sort');
+        $sortDirection = request('direction', 'desc');
+        $validSortFields = ['id', 'name', 'start_date', 'end_date'];
+
+
+        if ($sortField && in_array($sortField, $validSortFields)) {
+            $query->orderBy($sortField, $sortDirection);
+        } else {
+            $query->orderBy('id', 'desc');
         }
-
-        // Sorting
-        $sortField = request('sort', 'id');
-        $sortDirection = 'desc';
-
-        if (request('direction') !== null){
-             $sortDirection = request('direction');
-        }
-       
-        if (!in_array($sortField, ['id', 'name', 'start_date', 'end_date'])) {
-            $sortField = 'id';
-            $sortDirection = 'desc';
-        }
-
-
+        
         $query->orderBy($sortField, $sortDirection);
 
-        return view('projects.index', ['projects' => $query->paginate(10)->withQueryString()]);
+        $projects = $query->paginate(10);
+        return view('projects.index', ['projects' => $projects]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
         $this->authorize('create', Project::class);
         return view('projects.create'); 
@@ -58,23 +56,14 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+        
         $this->authorize('create', Project::class);
         $validatedData = $request->validate([
             'name' => 'required|max:255',
             'description' => 'required',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
-            'location' => 'required'
-        ]);
-        try {
-            Project::create($validatedData);
-        } catch (\Exception $e) {
-            Log::error('Error creating project: ' . $e->getMessage());
-            return redirect()->route('projects.index')->with('error', 'Error creating project.');
-        }
-
-       
-
+            'location' => 'required']);
         return redirect()->route('projects.index')->with('success', 'Project created successfully.');
         
     }
@@ -112,15 +101,10 @@ class ProjectController extends Controller
             'end_date' => 'required|date',
             'location' => 'required'
         ]);
-
-        try {
-            $project = Project::findOrFail($id);
-            $project->update($validatedData);
-        } catch (\Exception $e) {
-            Log::error('Error updating project: ' . $e->getMessage());
-            return redirect()->route('projects.index')->with('error', 'Error updating project.');
-        }
         
+        $project = Project::findOrFail($id);
+        $project->update($validatedData);
+       
 
         return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
     }
@@ -131,6 +115,10 @@ class ProjectController extends Controller
     public function destroy(string $id)
     {
         $this->authorize('delete', Project::class);
-        //
+        $project = Project::findOrFail($id);
+        $project->delete();
+
+        return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
+        
     }
 }

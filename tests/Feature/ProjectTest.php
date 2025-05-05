@@ -3,13 +3,22 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\User;
 
 class ProjectTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Create a user using the factory
+        $user = User::factory()->create();
+        // Authenticate the user
+        $this->actingAs($user);
+    }
     public function test_projects_index_view_is_accessible(): void
     {
         $response = $this->get(route('projects.index'));

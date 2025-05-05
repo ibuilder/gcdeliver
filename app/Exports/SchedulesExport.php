@@ -3,35 +3,36 @@
 namespace App\Exports;
 
 use App\Models\Schedule;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
-class SchedulesExport implements FromQuery, WithHeadings, WithMapping
+class SchedulesExport
 {
-    use Exportable;
-    public function query()
+    public function export(): Spreadsheet
     {
-        return Schedule::query();
-    }
-    public function map($schedule): array
-    {
-        return [
-            $schedule->id,
-            $schedule->name,
-            $schedule->description,
-            $schedule->start_date,
-            $schedule->end_date];
-    }
-    public function headings(): array
-    {
-        return [
+        $schedules = Schedule::all()->toArray();
+        
+        $headings = [
             'id',
             'Name',
             'Description',
             'Start Date',
             'End Date'
         ];
+        
+        $data = [$headings];
+        foreach ($schedules as $schedule) {
+            $data[] = [
+                $schedule['id'],
+                $schedule['name'],
+                $schedule['description'],
+                $schedule['start_date'],
+                $schedule['end_date']
+            ];
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getActiveSheet()->fromArray($data);
+        
+        return $spreadsheet;
     }
 }

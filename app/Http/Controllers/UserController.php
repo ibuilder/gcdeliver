@@ -16,30 +16,33 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
         
-        $search = request('search');
-        $sort = request('sort');
+        $search = request('search'); 
+        $sortField = request('sort', 'id');
+        $sortDirection = request('direction', 'desc');
 
         $users = User::query();
 
         if ($search) {
-            $users->where('name', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%")
-                ->orWhereHas('role', function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%");
-                });
+            $searchTerm = '%' . $search . '%';
+            $users->where(function ($query) use ($searchTerm) {
+                $query->where('name', 'like', $searchTerm)
+                      ->orWhere('email', 'like', $searchTerm)
+                      ->orWhereHas('role', function ($roleQuery) use ($searchTerm) {
+                          $roleQuery->where('name', 'like', $searchTerm);
+                      });
+            });
         }
 
-        if ($sort) {
-            $sortParts = explode('|', $sort);
-            $sortColumn = $sortParts[0];
-            $sortDirection = $sortParts[1] ?? 'asc';
-            $users->orderBy($sortColumn, $sortDirection);
-        } else {
-            $users->orderBy('id', 'desc');
+        $validSortFields = ['id', 'name', 'email', 'role'];
+        if (in_array($sortField, $validSortFields)) {
+            if ($sortField === 'role') {
+                $users->orderBy(Role::select('name')->whereColumn('id', 'users.role_id'), $sortDirection);
+            } else {
+                $users->orderBy($sortField, $sortDirection);
+            }
         }
 
-        $users = $users->paginate(10);
-        return view('users.index', ['users' => $users->appends(['search' => $search, 'sort' => $sort])]);
+        return view('users.index', ['users' => $users->paginate(10)->withQueryString()]);
     }
 
     /**
@@ -57,14 +60,13 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create', User::class);
-        $validated = $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|confirmed',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|confirmed|min:8',
             'role_id' => 'required'
         ]);
-    
-        $user = new User($validated);
+        $user = new User($validatedData);
         $user->password = bcrypt($request->password);
         $user->save();
     
@@ -77,7 +79,7 @@ class UserController extends Controller
     public function show(string $id)
     {
         $this->authorize('view', User::class);
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         return view('users.show', ['user' => $user]);
     }
 
@@ -88,7 +90,7 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $this->authorize('update', User::class);
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         return view('users.edit', ['user' => $user]);
     }
 
@@ -98,12 +100,16 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         $this->authorize('update', User::class);
-        $validated = $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email,' . $id,
         ]);
-        $user = User::find($id);
-        $user->update($validated);
+        if ($request->filled('password')) {
+            $validatedData['password'] = bcrypt($request->password);
+        }
+        $user = User::findOrFail($id);
+        $user->update($validatedData);
+
         return to_route('users.index');
 
     }
@@ -114,7 +120,7 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         $this->authorize('delete', User::class);
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $user->delete();
         return to_route('users.index');
 

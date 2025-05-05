@@ -9,11 +9,20 @@ use App\Models\User;
 use App\Models\Role;
 
 class UserTest extends TestCase
-{
+{    
     use RefreshDatabase;
     use WithFaker;
 
-    /**
+        protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Create a user and authenticate them
+        $user = User::factory()->create();
+        $this->actingAs($user);
+    }
+
+        /**
      * Check if the users index view is accessible.
      */
     public function test_users_index_view_is_accessible()
