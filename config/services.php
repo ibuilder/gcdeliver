@@ -35,4 +35,21 @@ return [
         ],
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
+    ],
+
+    'office365' => [
+        'client_id' => env('OFFICE365_CLIENT_ID'),
+        'client_secret' => env('OFFICE365_CLIENT_SECRET'),
+        'redirect' => env('OFFICE365_REDIRECT_URI'),
+    ],
+
+    'procore' => [
+        'client_id' => env('PROCORE_CLIENT_ID'),
+        'client_secret' => env('PROCORE_CLIENT_SECRET'),
+        'redirect' => env('PROCORE_REDIRECT_URI'),
+    ],
 ];

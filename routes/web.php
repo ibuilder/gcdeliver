@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
@@ -11,6 +12,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 Auth::routes();
+
+// Socialite Routes
+Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
+
+Route::get('/auth/office365', [SocialiteController::class, 'redirectToOffice365'])->name('auth.office365');
+Route::get('/auth/office365/callback', [SocialiteController::class, 'handleOffice365Callback']);
+
+Route::get('/auth/procore', [SocialiteController::class, 'redirectToProcore'])->name('auth.procore');
+Route::get('/auth/procore/callback', [SocialiteController::class, 'handleProcoreCallback']);
+
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

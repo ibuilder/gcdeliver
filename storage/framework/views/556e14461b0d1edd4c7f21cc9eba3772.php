@@ -51,6 +51,11 @@
                             <?php endif; ?>
                         <?php else: ?>
                             <li class="nav-item dropdown">
+                                 <a class="nav-link" href="<?php echo e(route('user.show', Auth::user()->id)); ?>">
+                                    My Profile
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     <?php echo e(Auth::user()->name); ?>
 
