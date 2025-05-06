@@ -30,7 +30,7 @@ class ItemController extends Controller
         $sortField = request('sort', 'id');
         $sortDirection = request('direction', 'desc');
 
-        if (!in_array($sortField, ['id', 'name', 'spec_section', 'unit', 'quantity', 'unit_price', 'lead_time'])) {
+        if (!in_array($sortField, ['id', 'name', 'spec_section', 'unit', 'quantity', 'unit_price', 'lead_time','stock_level','reorder_point'])) {
             $sortField = 'id';
             $sortDirection = 'desc';
         }
@@ -66,6 +66,8 @@ class ItemController extends Controller
                 'unit_price' => 'required|numeric',
                 'lead_time' => 'required|string',
                 'status' => 'required|string',
+                'stock_level' => 'nullable|integer',
+                'reorder_point' => 'nullable|integer'
             ]);
 
             $item = Item::create($validatedData);
@@ -108,6 +110,8 @@ class ItemController extends Controller
             'unit_price' => 'required|numeric',
             'lead_time' => 'required|string',
             'status' => 'required|string',
+            'stock_level' => 'nullable|integer',
+            'reorder_point' => 'nullable|integer'
         ]);
             
         $item->update($validatedData);

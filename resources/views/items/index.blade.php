@@ -18,6 +18,8 @@
                     <th><a href="{{ route('items.index', ['sort' => 'quantity', 'order' => (request('sort') == 'quantity' && request('order') == 'asc') ? 'desc' : 'asc', 'search' => request('search')]) }}">Quantity</a></th>
                     <th><a href="{{ route('items.index', ['sort' => 'unit_price', 'order' => (request('sort') == 'unit_price' && request('order') == 'asc') ? 'desc' : 'asc', 'search' => request('search')]) }}">Unit Price</a></th>
                     <th><a href="{{ route('items.index', ['sort' => 'lead_time', 'order' => (request('sort') == 'lead_time' && request('order') == 'asc') ? 'desc' : 'asc', 'search' => request('search')]) }}">Lead Time</a></th>
+                    <th><a href="{{ route('items.index', ['sort' => 'stock_level', 'order' => (request('sort') == 'stock_level' && request('order') == 'asc') ? 'desc' : 'asc', 'search' => request('search')]) }}">Stock Level</a></th>
+                    <th><a href="{{ route('items.index', ['sort' => 'reorder_point', 'order' => (request('sort') == 'reorder_point' && request('order') == 'asc') ? 'desc' : 'asc', 'search' => request('search')]) }}">Reorder Point</a></th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -32,6 +34,8 @@
                         <td>{{ $item->quantity }}</td>
                         <td>{{ $item->unit_price }}</td>
                         <td>{{ $item->lead_time }}</td>
+                        <td>{{ $item->stock_level }}</td>
+                        <td>{{ $item->reorder_point }}</td>
                         <td>{{ $item->status }}</td>
                         <td>
                             <a href="{{ route('items.show', $item->id) }}" class="btn btn-info btn-sm">View</a>

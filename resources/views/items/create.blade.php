@@ -45,6 +45,14 @@
             <input type="number" name="quantity" id="quantity" class="form-control" required>
         </div>
         <div class="form-group">
+            <label for="stock_level">Stock Level:</label>
+            <input type="number" name="stock_level" id="stock_level" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="reorder_point">Reorder Point:</label>
+            <input type="number" name="reorder_point" id="reorder_point" class="form-control">
+        </div>
+        <div class="form-group">
             <label for="unit_price">Unit Price:</label>
             <input type="number" name="unit_price" id="unit_price" class="form-control" required>
         </div>

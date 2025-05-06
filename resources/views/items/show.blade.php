@@ -17,6 +17,8 @@
     <p><strong>Unit Price:</strong> {{ $item->unit_price }}</p>
     <p><strong>Lead Time:</strong> {{ $item->lead_time }}</p>
     <p><strong>Status:</strong> {{ $item->status }}</p>
+    <p><strong>Stock Level:</strong> {{ $item->stock_level }}</p>
+    <p><strong>Reorder Point:</strong> {{ $item->reorder_point }}</p>
 
     <a href="{{ route('items.edit', $item->id) }}">Edit</a>
 

@@ -32,6 +32,9 @@ initial-scale=1.0"> <title>Deliveries</title> </head> <body>
           Slot</a></th>
 
       <th>Location</th>
+      <th>Estimated Delivery</th>
+      <th>Actual Delivery</th>
+      <th>Tracking Number</th>
       <th>Unload Duration</th>
     </tr>
   </thead>
@@ -43,6 +46,9 @@ initial-scale=1.0"> <title>Deliveries</title> </head> <body>
       <td>{{ $delivery->time_slot }}</td>
       <td>{{ $delivery->location }}</td>
       <td>{{ $delivery->unload_duration }}</td>
+      <td>{{ $delivery->estimated_delivery_date }}</td>
+      <td>{{ $delivery->actual_delivery_date }}</td>
+      <td>{{ $delivery->tracking_number }}</td>
       <td>
         <a href="{{ route('deliveries.show', $delivery->id) }}">View</a>
       </td>

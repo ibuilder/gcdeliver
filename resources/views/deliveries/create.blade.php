@@ -38,6 +38,18 @@
             <label for="location">Location:</label>
             <input type="text" name="location" id="location" required>
         </div>
+        <div>
+            <label for="estimated_delivery_date">Estimated Delivery Date:</label>
+            <input type="date" name="estimated_delivery_date" id="estimated_delivery_date">
+        </div>
+        <div>
+            <label for="actual_delivery_date">Actual Delivery Date:</label>
+            <input type="date" name="actual_delivery_date" id="actual_delivery_date">
+        </div>
+        <div>
+            <label for="tracking_number">Tracking Number:</label>
+            <input type="text" name="tracking_number" id="tracking_number">
+        </div>
 
         <button type="submit">Save</button>
         <a href="{{ route('deliveries.index') }}">Cancel</a>

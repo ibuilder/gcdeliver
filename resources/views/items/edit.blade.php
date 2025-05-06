@@ -33,6 +33,14 @@
             <label for="quantity">Quantity</label>
             <input type="number" name="quantity" id="quantity" value="{{ $item->quantity }}">
         </div>
+        <div>
+            <label for="stock_level">Stock Level</label>
+            <input type="number" name="stock_level" id="stock_level" value="{{ $item->stock_level }}">
+        </div>
+        <div>
+            <label for="reorder_point">Reorder Point</label>
+            <input type="number" name="reorder_point" id="reorder_point" value="{{ $item->reorder_point }}">
+        </div>
         <div><label for="unit_price">Unit Price</label><input type="number" name="unit_price" id="unit_price" value="{{ $item->unit_price }}"></div><div><label for="lead_time">Lead Time</label><input type="number" name="lead_time" id="lead_time" value="{{ $item->lead_time }}"></div><div><label for="status">Status</label><input type="text" name="status" id="status" value="{{ $item->status }}"></div>
         <button type="submit">Save</button>
         <a href="{{ route('items.index') }}">Cancel</a>

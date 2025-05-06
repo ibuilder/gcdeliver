@@ -19,7 +19,10 @@ class Delivery extends Model
         'location',
         'unload_duration',
         'status',
-        'notes'
+        'notes',
+        'estimated_delivery_date',
+        'actual_delivery_date',
+        'tracking_number'
     ];
 
     public function project(): BelongsTo

@@ -26,7 +26,7 @@ class DeliveryController extends Controller
         }
 
         // Sorting
-        $sortableFields = ['id', 'title', 'date', 'time'];
+        $sortableFields = ['id', 'title', 'date', 'time', 'estimated_delivery_date', 'actual_delivery_date', 'tracking_number'];
         $sortField = in_array(request('sort'), $sortableFields) ? request('sort') : 'id';
         $sortDirection = request('direction', 'desc');
         $query->orderBy($sortField, $sortDirection);
@@ -53,7 +53,10 @@ class DeliveryController extends Controller
             'project_id' => 'required',
             'title' => 'required|string|max:255',
             'date' => 'required|date',
-            'time' => 'required|string',
+            'time_slot' => 'required|string',
+            'estimated_delivery_date' => 'nullable|date',
+            'actual_delivery_date' => 'nullable|date',
+            'tracking_number' => 'nullable|string',
             'location' => 'required|string|max:255'
         ]);
 
@@ -98,7 +101,10 @@ class DeliveryController extends Controller
             'project_id' => 'required',
             'title' => 'required|string|max:255',
             'date' => 'required|date',
-            'time' => 'required|string',
+            'time_slot' => 'required|string',
+            'estimated_delivery_date' => 'nullable|date',
+            'actual_delivery_date' => 'nullable|date',
+            'tracking_number' => 'nullable|string',
             'location' => 'required|string|max:255'
         ]);
 

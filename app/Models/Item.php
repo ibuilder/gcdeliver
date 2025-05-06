@@ -23,8 +23,10 @@ class Item extends Model
         'description',
         'spec_section',
         'lead_time',
-        'status',
-        'project_id'
+        'status',        
+        'project_id',
+        'stock_level',
+        'reorder_point'
     ];
 
     /**
