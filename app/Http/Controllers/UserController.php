@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 
 use App\Models\Role;
-
+use Illuminate\Support\Facades\Auth;
 /**
  * This class is the controller for the User model. It handles requests related to users, such as listing, creating, updating, and deleting users.
  */
@@ -18,40 +19,47 @@ class UserController extends Controller
     
 
     public function index()
-    {
-        $this->authorize('viewAny', User::class);
+    {   
+        //Check if user has the ability to manage users
+        Gate::authorize('manage-users');
+
+        // $this->authorize('viewAny', User::class); //This is not needed because we are already checking with the gate
         
         $search = request('search'); 
         $sortField = request('sort', 'id');
         $sortDirection = request('direction', 'desc');
-
+        
         $users = User::query()
-        ->when($search, function ($query) use ($search) {
-            $query->where(function ($subQuery) use ($search) {
-                $subQuery->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhereHas('role', function ($roleQuery) use ($search) {
-                        $roleQuery->where('name', 'like', "%{$search}%");
-                    });
-            });
-        })
-        ->with('role');
-
-        }
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhereHas('role', function ($roleQuery) use ($search) {
+                            $roleQuery->where('name', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->with('role');
 
 
         $validSortFields = ['id', 'name', 'email', 'role'];
         if (in_array($sortField, $validSortFields)) {
             if ($sortField === 'role') {
-                 $users->orderBy(Role::select('name')->whereColumn('id', 'users.role_id'), $sortDirection);
+                $users->orderBy(Role::select('name')->whereColumn('id', 'users.role_id'), $sortDirection);
             } else {
                 $users->orderBy($sortField, $sortDirection);
             }
         }
 
-        return view('users.index', ['users' => $users->with('role')->paginate(10)->withQueryString()]);
-    }
+        
+        // Get all users using User::all()
+        $users = $users->get();
 
+        //Return the view with the users data
+        return view('users.index', ['users' => $users]);
+
+    }
+    
     /**
     * Show the form for creating a new resource.
     */

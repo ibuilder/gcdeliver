@@ -1,47 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
-    {{-- This view will display the list of users --}}
+    <div class="container">
+        <h1>User List</h1>
 
-    <form action="{{ route('users.index') }}" method="GET">
-        <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}">
-        <button type="submit">Search</button>
-    </form>
+        @can('manage-users')
+            <p>As an admin, you can manage users.</p>
+        @endcan
 
-    <br>
-    <table>
-        <thead>
-            <tr>
-                <th>
-                    <a href="{{ route('users.index', ['sort' => 'id', 'search' => request('search')]) }}">ID</a>
-                </th>
-                <th>
-                    <a href="{{ route('users.index', ['sort' => 'name', 'search' => request('search')]) }}">Name</a>
-                </th>
-                <th>
-                    <a href="{{ route('users.index', ['sort' => 'email', 'search' => request('search')]) }}">Email</a>
-                </th>
-                <th>
-                    <a href="{{ route('users.index', ['sort' => 'role', 'search' => request('search')]) }}">Role</a>
-                </th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+        <ul>
             @foreach ($users as $user)
-                <tr>
-                    <td>{{ $user->id }}</td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>{{ $user->role_id }}</td>
-                    <td>
-                        <a href="{{ route('users.show', $user->id) }}">View</a>
-                    </td>
-                </tr>
+                <li>
+                    {{ $user->name }} - {{ $user->email }}
+                    @can('manage-users')
+                     <!-- Placeholder for a delete button -->
+                     <button>Delete</button>
+                    @endcan
+                </li>
             @endforeach
-        </tbody>
-    </table>
-
-    <a href="{{ route('users.create') }}">Create User</a>
-    <br>
+        </ul>
+    </div>
+@endsection
 @endsection

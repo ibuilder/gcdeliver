@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\ProjectController;
@@ -23,9 +24,17 @@ Route::get('/auth/office365/callback', [SocialiteController::class, 'handleOffic
 Route::get('/auth/procore', [SocialiteController::class, 'redirectToProcore'])->name('auth.procore');
 Route::get('/auth/procore/callback', [SocialiteController::class, 'handleProcoreCallback']);
 
+// Admin Routes
+Route::middleware(['auth', 'can:is-admin'])->group(function () {
+    Route::get('/admin', function () {
+        return 'Admin Dashboard';
+    });
+});
 
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     
     Route::resource('partners', PartnerController::class);

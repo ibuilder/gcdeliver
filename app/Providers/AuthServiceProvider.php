@@ -6,6 +6,7 @@ use App\Models\Dashboard;
 use App\Policies\DashboardPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,5 +26,21 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+
+        Gate::define('is-admin', function ($user) {
+            return $user->role->name === 'admin';
+        });
+
+        Gate::define('manage-users', function ($user) {
+            return $user->role->name === 'admin';
+        });
+
+        Gate::define('manage-projects', function ($user) {
+            return in_array($user->role->name, ['admin', 'manager']);
+        });
+
+        Gate::define('view-reports', function ($user) {
+            return in_array($user->role->name, ['admin', 'manager', 'Owner']);
+        });
     }
 }
