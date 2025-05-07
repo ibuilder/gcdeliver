@@ -7,6 +7,8 @@ use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\UserProfileController;
 
 Route::get('/', function () {
@@ -33,12 +35,35 @@ Route::middleware(['auth', 'can:is-admin'])->group(function () {
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/projects/create', [ProjectController::class, 'create'])
+                ->name('projects.create')->middleware('can:manage-projects');
+    Route::post('/projects', [ProjectController::class, 'store'])
+                ->name('projects.store')->middleware('can:manage-projects');
+    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+    Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit')->middleware('can:manage-projects');
 
+    Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+
+    Route::middleware(['can:manage-projects'])->group(function(){
+        Route::resource('projects.items', ItemController::class)->middleware('auth');
+        Route::resource('projects.deliveries', DeliveryController::class)->middleware('auth');
+        Route::resource('projects.schedules', \App\Http\Controllers\ScheduleController::class)->middleware('auth');
+    });
+
+
+    Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update')->middleware('can:manage-projects');
+
+    Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])
+        ->name('projects.destroy')
+        ->middleware('can:manage-projects');
+    
+    Route::middleware(['can:manage-users'])->group(function () {
+        Route::resource('users', UserController::class)->middleware('auth');
+    });
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     
     Route::resource('partners', PartnerController::class);
-    Route::resource('projects', ProjectController::class);
+    
     Route::resource('users', UserController::class);
     Route::get('/users/{user}/edit', [UserProfileController::class, 'edit'])->name('user.edit');
     Route::put('/users/{user}', [UserProfileController::class, 'update'])->name('user.update');

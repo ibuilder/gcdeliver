@@ -1,37 +1,44 @@
-<div>
-    <div>
-        <a href="{{ route('projects.index') }}">Projects</a> > <a href="{{ route('projects.show', $project->id) }}">{{ $project->name }}</a> > Edit
+@extends('layouts.app')
+
+@section('content')
+    <div class="container">
+        <h1>Edit Project</h1>
+
+        <form method="POST" action="{{ route('projects.update', $project) }}">
+            @csrf
+            @method('PUT')
+
+            <div>
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" value="{{ old('name', $project->name) }}" required>
+                @error('name')
+                    <div>{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div>
+                <label for="description">Description</label>
+                <textarea id="description" name="description" required>{{ old('description', $project->description) }}</textarea>
+                @error('description')
+                    <div>{{ $message }}</div>
+                @enderror
+            </div>
+            
+            @can('manage-projects')
+                <div>
+                    <h2>Assign Users</h2>
+                    @foreach($users as $user)
+                        <div>
+                            <input type="checkbox" name="users[]" value="{{ $user->id }}" {{ $project->users->contains($user) ? 'checked' : '' }}> {{ $user->name }}
+                        </div>
+                    @endforeach
+                </div>
+            @endcan
+
+            <button type="submit">Update Project</button>
+
+        </form>
     </div>
-    
-    <h1>Edit Project</h1>
+@endsection
 
-    <form method="POST" action="{{ route('projects.update', $project->id) }}">
-        @csrf
-        @method('PUT')
 
-        <div>
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" value="{{ $project->name }}" required>
-        </div>
-
-        <div>
-            <label for="description">Description</label>
-            <textarea id="description" name="description" required>{{ $project->description }}</textarea>
-        </div>
-
-        <div>
-            <label for="location">Location</label>
-            <input type="text" id="location" name="location" value="{{ $project->location }}" required>
-        </div>
-        <div>
-            <label for="start_date">Start Date</label>
-            <input type="date" id="start_date" name="start_date" value="{{ $project->start_date }}" required>
-        </div>
-        <div>
-            <label for="end_date">End Date</label>
-            <input type="date" id="end_date" name="end_date" value="{{ $project->end_date }}" required>
-        </div>
-        <button type="submit">Save</button>
-        <a href="{{ route('projects.index') }}">Cancel</a>
-    </form>
-</div>

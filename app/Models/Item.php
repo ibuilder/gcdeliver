@@ -30,13 +30,6 @@ class Item extends Model
     ];
 
     /**
-     * Get the project that owns the item.
-     */
-    public function project(): BelongsTo
-    {
-        return $this->belongsTo(Project::class);
-    }
-    
     /**
      * Get the delivery that owns the item.
      */
@@ -44,7 +37,12 @@ class Item extends Model
     {
         return $this->belongsTo(Delivery::class);
     }
-    
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
+    }
+
     public function partners(): BelongsToMany
     {
         return $this->belongsToMany(Partner::class, 'item_partners')

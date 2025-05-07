@@ -1,20 +1,26 @@
-<div>
-    <nav>
-        <ol>
-            <li><a href="{{ route('schedules.index') }}">Schedules</a></li>
-            <li>{{ $schedule->task_name }}</li>
-        </ol>
-    </nav>
-    <h1>Schedule Details</h1>
+@extends('layouts.app')
+
+@section('content')
+    <h1>Schedule for Project: {{ $project->name }}</h1>
 
     <p><strong>ID:</strong> {{ $schedule->id }}</p>
-    <p><strong>Project:</strong> {{ $schedule->project->name }}</p>
-    <p><strong>Task Name:</strong> {{ $schedule->task_name }}</p>
+    <p><strong>Name:</strong> {{ $schedule->name }}</p>
     <p><strong>Start Date:</strong> {{ $schedule->start_date }}</p>
     <p><strong>End Date:</strong> {{ $schedule->end_date }}</p>
-    <p><strong>Duration:</strong> {{ $schedule->duration }}</p>
-    <p><strong>Progress:</strong> {{ $schedule->progress }}</p>
 
-    <a href="{{ route('schedules.edit', $schedule->id) }}">Edit</a>
-    <a href="{{ route('schedules.index') }}">Back</a>
-</div>
+    @can('manage-projects')
+        <a href="{{ route('projects.schedules.edit', [$project, $schedule]) }}">Edit Schedule</a>
+    @endcan
+    
+    @can('manage-projects')
+        <form method="POST" action="{{ route('projects.schedules.destroy', [$project, $schedule]) }}">
+            @csrf
+            @method('DELETE')
+            <button type="submit" onclick="return confirm('Are you sure you want to delete this schedule?')">Delete Schedule</button>
+        </form>
+    @endcan
+
+    <a href="{{ route('projects.schedules.index', $project) }}">Back to Schedules</a>
+
+@endsection
+

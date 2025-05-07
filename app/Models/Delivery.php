@@ -25,11 +25,6 @@ class Delivery extends Model
         'tracking_number'
     ];
 
-    public function project(): BelongsTo
-    {
-        return $this->belongsTo(Project::class);
-    }
-
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);

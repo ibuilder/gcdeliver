@@ -3,130 +3,94 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
-use App\Models\User;
-use App\Notifications\NewItemNotification;
+use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ItemController extends Controller
 {
     /**
     * Display a listing of the resource.
+    * @param  \App\Models\Project  $project
+    * @return \Illuminate\Http\Response
     */
-    public function index()
+    public function index(Project $project)
     {
-        $this->authorize('viewAny', Item::class);
-        $query = Item::query();
-
-        // Filtering
-        if (request('search')) {
-            $searchTerm = '%' . request('search') . '%';
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('name', 'like', $searchTerm)
-                    ->orWhere('spec_section', 'like', $searchTerm);
-            });
-        }
-
-        // Sorting
-        $sortField = request('sort', 'id');
-        $sortDirection = request('direction', 'desc');
-
-        if (!in_array($sortField, ['id', 'name', 'spec_section', 'unit', 'quantity', 'unit_price', 'lead_time','stock_level','reorder_point'])) {
-            $sortField = 'id';
-            $sortDirection = 'desc';
-        }
-
-        $query->orderBy($sortField, $sortDirection);
-
-        return view('items.index', ['items' => $query->paginate(10)->withQueryString()]);
+        $items = $project->items;
+        return view('items.index', compact('project', 'items'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Project $project)
     { 
         $this->authorize('create', Item::class);
-        return view('items.create');
+        return view('items.create', compact('project'));
     }
 
     /**
         * Store a newly created resource in storage.
         */
-    public function store(Request $request)
+    public function store(Request $request, Project $project)
     {
-        try {
-            $this->authorize('create', Item::class);
-            $validatedData = $request->validate([
-                'project_id' => 'required|exists:projects,id',
-                'name' => 'required|string|max:255',
-                'description' => 'required|string|max:255',
-                'spec_section' => 'required|string|max:255',
-                'unit' => 'required|string',
-                'quantity' => 'required|numeric',
-                'unit_price' => 'required|numeric',
-                'lead_time' => 'required|string',
-                'status' => 'required|string',
-                'stock_level' => 'nullable|integer',
-                'reorder_point' => 'nullable|integer'
-            ]);
-
-            $item = Item::create($validatedData);
-
-            $users = User::whereIn('role', ['admin', 'manager'])->get();
-
-            foreach ($users as $user) {
-                $user->notify(new NewItemNotification($item->name));
-            }
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => 'Error creating the item: ' . $e->getMessage()])->withInput();
-        }
-
-
-
-        return redirect()->route('items.index');
-    }
-
-    public function edit(string $id)
-    {
-        $item = Item::findOrFail($id);
-        $this->authorize('update', $item);
-
-        return view('items.edit', ['item' => $item]);
-    }
-
-    public function update(Request $request, string $id)
-    {
-        try {
-        $item = Item::findOrFail($id);
-        $this->authorize('update', $item);
+        Gate::authorize('manage-projects');
 
         $validatedData = $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-            'spec_section' => 'required|string|max:255',
-            'unit' => 'required|string',
+            'name' => 'required',
             'quantity' => 'required|numeric',
-            'unit_price' => 'required|numeric',
-            'lead_time' => 'required|string',
-            'status' => 'required|string',
-            'stock_level' => 'nullable|integer',
-            'reorder_point' => 'nullable|integer'
+            'unit' => 'nullable',
+            'status' => 'nullable',
+        ]);
+
+        $project->items()->create($validatedData);
+        
+        return redirect()->route('projects.items.index', $project)->with('success', 'Item created successfully.');
+
+
+    }
+
+    public function edit(Project $project, Item $item)
+    {
+        Gate::authorize('manage-projects');
+
+        return view('items.edit', compact('project','item'));
+
+    }
+
+    public function update(Request $request, Project $project, Item $item)
+    {
+        Gate::authorize('manage-projects');
+
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'quantity' => 'required|numeric',
+            'unit' => 'nullable',
+            'status' => 'nullable',
         ]);
             
         $item->update($validatedData);
-
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => 'Error updating the item: ' . $e->getMessage()])->withInput();
-        }
-        return redirect()->route('items.index');
+        return redirect()->route('projects.items.show', [$project, $item])->with('success', 'Item updated successfully.');
     }
 
-    public function show(string $id)
+        /**
+     * Display the specified resource.
+     */
+    public function show(Project $project, Item $item)
     {
-        $item = Item::findOrFail($id);
-        $this->authorize('view', $item);
+        Gate::authorize('manage-projects');
 
-        return view('items.show', ['item' => $item]);
+        return view('items.show', compact('project', 'item'));
     }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Project $project, Item $item)
+    {
+        Gate::authorize('manage-projects');
+        $item->delete();
+        return redirect()->route('projects.items.index', $project)->with('success', 'Item deleted successfully.');
+    }
+
 }

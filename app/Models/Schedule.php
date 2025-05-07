@@ -31,10 +31,10 @@ class Schedule extends Model
         return $this->belongsToMany(Schedule::class, 'activity_dependencies', 'dependency_id', 'schedule_id')
             ->withTimestamps();
     }
-
+    
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
     }
-}
 
+}

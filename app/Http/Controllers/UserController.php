@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 use App\Models\Role;
@@ -23,43 +24,13 @@ class UserController extends Controller
         //Check if user has the ability to manage users
         Gate::authorize('manage-users');
 
-        // $this->authorize('viewAny', User::class); //This is not needed because we are already checking with the gate
-        
-        $search = request('search'); 
-        $sortField = request('sort', 'id');
-        $sortDirection = request('direction', 'desc');
-        
-        $users = User::query()
-            ->when($search, function ($query) use ($search) {
-                $query->where(function ($subQuery) use ($search) {
-                    $subQuery->where('name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%")
-                        ->orWhereHas('role', function ($roleQuery) use ($search) {
-                            $roleQuery->where('name', 'like', "%{$search}%");
-                        });
-                });
-            })
-            ->with('role');
-
-
-        $validSortFields = ['id', 'name', 'email', 'role'];
-        if (in_array($sortField, $validSortFields)) {
-            if ($sortField === 'role') {
-                $users->orderBy(Role::select('name')->whereColumn('id', 'users.role_id'), $sortDirection);
-            } else {
-                $users->orderBy($sortField, $sortDirection);
-            }
-        }
-
-        
         // Get all users using User::all()
-        $users = $users->get();
+        $users = User::all();
 
         //Return the view with the users data
         return view('users.index', ['users' => $users]);
 
     }
-    
     /**
     * Show the form for creating a new resource.
     */
@@ -74,19 +45,20 @@ class UserController extends Controller
     */
     public function store(Request $request)
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('manage-users');
+
         $validatedData = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:8',
-            'role_id' => 'required'
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'confirmed', 'min:8'],
         ]);
-        $user = new User([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'role_id' => $validatedData['role_id']
-        ]);
-        $user->password = bcrypt($validatedData['password']);
+
+        //Hash the password before saving
+        $validatedData['password'] = Hash::make($validatedData['password']);
+
+        //Create the new user
+        $user = User::create($validatedData);
+
         $user->save();
         return to_route('users.index');
     }
@@ -94,38 +66,33 @@ class UserController extends Controller
     /**
     * Display the specified resource.
     */
-    public function show(string $id)
+    public function show(User $user)
     {
-        $this->authorize('view', User::class);
-        $user = User::findOrFail($id);
-        return view('users.show', ['user' => $user]);
+        //Check if user has the ability to manage users
+        Gate::authorize('manage-users');
+        return view('users.show', compact('user'));
     }
 
 
     /**
     * Show the form for editing the specified resource.
     */
-    public function edit(string $id)
-    {
-        $this->authorize('update', User::class);
-        $user = User::findOrFail($id);
-        return view('users.edit', ['user' => $user]);
-    }
+    public function edit(User $user)
+    {   
+        Gate::authorize('manage-users');
+        return view('users.edit', compact('user'));
+    }    
 
     /**
     * Update the specified resource in storage.
     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, User $user)
     {
-        $this->authorize('update', User::class);
+        Gate::authorize('manage-users');
         $validatedData = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
         ]);
-        if ($request->filled('password')) {
-            $validatedData['password'] = bcrypt($request->password);
-        }
-        $user = User::findOrFail($id);
         $user->update($validatedData);
 
         return to_route('users.index');
@@ -135,12 +102,10 @@ class UserController extends Controller
     /**
     * Remove the specified resource from storage.
     */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        $this->authorize('delete', User::class);
-        $user = User::findOrFail($id);
+        Gate::authorize('manage-users');
         $user->delete();
-        return to_route('users.index');
-
+        return to_route('users.index')->with('success', 'User deleted successfully.');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -22,23 +23,28 @@ class Project extends Model
         'status',
     ];
 
-    public function deliveries(): HasMany
-    {
-        return $this->hasMany(Delivery::class);
-    }
-
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);
     }
 
-    public function schedules(): HasMany
+    public function dailyReports(): HasMany
+    {
+        return $this->hasMany(DailyReport::class);
+    }
+    
+    public function deliveries(): HasMany 
+    { 
+        return $this->hasMany(Delivery::class); 
+    }
+
+     public function schedules(): HasMany
     {
         return $this->hasMany(Schedule::class);
     }
 
-    public function dailyReports(): HasMany
-    {
-        return $this->hasMany(DailyReport::class);
+   public function users(): BelongsToMany
+    { 
+        return $this->belongsToMany(User::class); 
     }
 }

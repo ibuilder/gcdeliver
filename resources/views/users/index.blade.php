@@ -1,24 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <h1>User List</h1>
+<div class="container">
+    <h1>Users</h1>
 
-        @can('manage-users')
-            <p>As an admin, you can manage users.</p>
-        @endcan
+    @can('manage-users')
+    <a href="{{ route('users.create') }}" class="btn btn-primary mb-3">Create New User</a>
+    @endcan
 
-        <ul>
-            @foreach ($users as $user)
-                <li>
-                    {{ $user->name }} - {{ $user->email }}
-                    @can('manage-users')
-                     <!-- Placeholder for a delete button -->
-                     <button>Delete</button>
-                    @endcan
-                </li>
-            @endforeach
-        </ul>
-    </div>
-@endsection
+    @if ($users->isNotEmpty())
+    <ul class="list-group">
+        @foreach ($users as $user)
+        <li class="list-group-item">
+            @can('manage-users')
+                <a href="{{ route('users.show', $user) }}">{{ $user->name }}</a>
+            @else
+                {{ $user->name }}
+            @endcan
+            - {{ $user->email }}
+        </li>
+        @endforeach
+    </ul>
+    @else
+    <p>No users found.</p>
+    @endif
+</div>
 @endsection

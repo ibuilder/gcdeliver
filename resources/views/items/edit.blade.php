@@ -1,48 +1,38 @@
-<div>
-    <div>
-        <a href="{{ route('items.index') }}">Items</a> /
-        <a href="{{ route('items.show', $item->id) }}">{{ $item->name }}</a> /
-        <span>Edit</span>
-    </div>
-    <h1>Edit Item</h1>
-    <form method="POST" action="{{ route('items.update', $item->id) }}">
+@extends('layouts.app')
+
+@section('content')
+    <h1>Edit Item: {{ $item->name }} for Project: {{ $project->name }}</h1>
+
+    <form method="POST" action="{{ route('projects.items.update', [$project, $item]) }}">
         @csrf
         @method('PUT')
 
         <div>
-            <label for="project_id">Project ID</label>
-            <input type="text" name="project_id" id="project_id" value="{{ $item->project_id }}">
-        </div>
-        <div>
             <label for="name">Name</label>
-            <input type="text" name="name" id="name" value="{{ $item->name }}">
-        </div>
-        <div>
-            <label for="description">Description</label>
-            <input type="text" name="description" id="description" value="{{ $item->description }}">
-        </div>
-        <div>
-            <label for="spec_section">Spec Section</label>
-            <input type="text" name="spec_section" id="spec_section" value="{{ $item->spec_section }}">
-        </div>
-        <div>
-            <label for="unit">Unit</label>
-            <input type="text" name="unit" id="unit" value="{{ $item->unit }}">
+            <input type="text" name="name" id="name" value="{{ old('name', $item->name) }}">
         </div>
         <div>
             <label for="quantity">Quantity</label>
-            <input type="number" name="quantity" id="quantity" value="{{ $item->quantity }}">
+            <input type="number" name="quantity" id="quantity" value="{{ old('quantity', $item->quantity) }}">
         </div>
         <div>
-            <label for="stock_level">Stock Level</label>
-            <input type="number" name="stock_level" id="stock_level" value="{{ $item->stock_level }}">
+            <label for="unit">Unit</label>
+            <input type="text" name="unit" id="unit" value="{{ old('unit', $item->unit) }}">
         </div>
         <div>
-            <label for="reorder_point">Reorder Point</label>
-            <input type="number" name="reorder_point" id="reorder_point" value="{{ $item->reorder_point }}">
+            <label for="status">Status</label>
+            <input type="text" name="status" id="status" value="{{ old('status', $item->status) }}">
         </div>
-        <div><label for="unit_price">Unit Price</label><input type="number" name="unit_price" id="unit_price" value="{{ $item->unit_price }}"></div><div><label for="lead_time">Lead Time</label><input type="number" name="lead_time" id="lead_time" value="{{ $item->lead_time }}"></div><div><label for="status">Status</label><input type="text" name="status" id="status" value="{{ $item->status }}"></div>
-        <button type="submit">Save</button>
-        <a href="{{ route('items.index') }}">Cancel</a>
-    </form>
-</div>
+        @if ($errors->any())
+            <div>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <button type="submit">Update Item</button>
+        <a href="{{ route('projects.items.show', [$project, $item]) }}">Cancel</a>
+        </div>
+@endsection

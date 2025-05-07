@@ -1,61 +1,24 @@
-<!DOCTYPE html> <html lang="en"> <head>
-<meta charset="UTF-8"> <meta name="viewport" content="width=device-width,
-initial-scale=1.0"> <title>Deliveries</title> </head> <body>
-<h1>Deliveries</h1>
+@extends('layouts.app')
 
-<div>
-  <a href="{{ route('deliveries.create') }}">Create Delivery</a>
-</div>
+@section('content')
+    <h1>Deliveries for Project: {{ $project->name }}</h1>
 
-<form action="{{ route('deliveries.index') }}" method="GET">
-  <input type="text" name="search" placeholder="Search..."
-    value="{{ request('search') }}">
-  <button type="submit">Search</button>
-</form>
+    <div>
+        <a href="{{ route('projects.deliveries.create', $project) }}">Create New Delivery</a>
+    </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>
-        <a
-          href="{{ route('deliveries.index', ['sort' => (request('sort') === 'id-asc' ? 'id-desc' : 'id-asc')]) }}">ID</a>
-      </th>
-      <th>
-        <a
-          href="{{ route('deliveries.index', ['sort' => (request('sort') === 'title-asc' ? 'title-desc' : 'title-asc')]) }}">Title</a>
-      </th>
-      <th><a
-          href="{{ route('deliveries.index', ['sort' => (request('sort') === 'date-asc' ? 'date-desc' : 'date-asc')]) }}">Scheduled
-          Date</a></th>
-      <th><a
-          href="{{ route('deliveries.index', ['sort' => (request('sort') === 'time-asc' ? 'time-desc' : 'time-asc')]) }}">Time
-          Slot</a></th>
+    @if ($deliveries->isNotEmpty())
+        <ul>
+            @foreach ($deliveries as $delivery)
+                <li>                    
+                    <a href="{{ route('projects.deliveries.show', [$project, $delivery]) }}">Delivery ID: {{ $delivery->id }}</a>
+                    (Date: {{ $delivery->delivery_date }}, Status: {{ $delivery->status }})                 
+                </li>
+            @endforeach
+        </ul>
+    @else
+        <p>No deliveries found for this project.</p>
+    @endif
+@endsection
 
-      <th>Location</th>
-      <th>Estimated Delivery</th>
-      <th>Actual Delivery</th>
-      <th>Tracking Number</th>
-      <th>Unload Duration</th>
-    </tr>
-  </thead>
-  <tbody>
-    @foreach($deliveries as $delivery) <tr>
-      <td>{{ $delivery->id }}</td>
-      <td>{{ $delivery->title }}</td>
-      <td>{{ $delivery->date }}</td>
-      <td>{{ $delivery->time_slot }}</td>
-      <td>{{ $delivery->location }}</td>
-      <td>{{ $delivery->unload_duration }}</td>
-      <td>{{ $delivery->estimated_delivery_date }}</td>
-      <td>{{ $delivery->actual_delivery_date }}</td>
-      <td>{{ $delivery->tracking_number }}</td>
-      <td>
-        <a href="{{ route('deliveries.show', $delivery->id) }}">View</a>
-      </td>
-
-
-    </tr>
-    @endforeach
-  </tbody>
-</table>
-</body> </html>
+<

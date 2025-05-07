@@ -1,27 +1,40 @@
-<div>
-    <nav>
-        <a href="{{ route('users.index') }}">Users</a> > {{ $user->name }}
-    </nav>
+@extends('layouts.app')
 
-    <h1>User Details</h1>
-
-
-    <p><strong>ID:</strong> {{ $user->id }}</p>
-    <p><strong>Name:</strong> {{ $user->name }}</p>
-    <p><strong>Email:</strong> {{ $user->email }}</p>
-    <p><strong>Role:</strong> {{ $user->role?->name }}</p>
-
+@section('content')
     <div>
-        <a href="{{ route('users.edit', $user->id) }}">
-            <button>Edit</button>
-        </a>
+        <h1>User: {{ $user->name }}</h1>
+
+        <p><strong>ID:</strong> {{ $user->id }}</p>
+        <p><strong>Name:</strong> {{ $user->name }}</p>
+        <p><strong>Email:</strong> {{ $user->email }}</p>
+        <p><strong>Created At:</strong> {{ $user->created_at }}</p>
+
+        @can('manage-users')
+        <div>
+            <a href="{{ route('users.edit', $user) }}">Edit User</a>
+
+            <form method="POST" action="{{ route('users.destroy', $user) }}">
+                @csrf
+                @method('DELETE')
+                <button type="submit" onclick="return confirm('Are you sure you want to delete this user?')">
+                    Delete User
+                </button>
+            </form>
+        </div>
+        @else
+        <div>
+            
+        </div>
+        @endcan
+
+        <div>
+            <a href="{{ route('users.index') }}">
+                <button>Back to Users</button>
+            </a>
+        </div>
     </div>
-    <div>
-        <a href="{{ url()->previous() }}">
-            <button>Back</button>
-        </a>
-    </div>
-</div>
+@endsection
+
 
 
 
