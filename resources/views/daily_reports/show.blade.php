@@ -13,11 +13,26 @@
     <p><strong>Weather Conditions:</strong> {{ $daily_report->weather_conditions }}</p>
     <p><strong>Notes:</strong> {{ $daily_report->notes }}</p>
     <p><strong>Manpower Information:</strong> {{ $daily_report->manpower_information }}</p>
-    
+
+    <h2>Files</h2>
+    @if ($daily_report->files->isNotEmpty())
+        <ul>
+            @foreach ($daily_report->files as $file)
+                <li><a href="{{ route('files.download', $file) }}">{{ $file->file_name }}</a></li>
+            @endforeach
+        </ul>
+    @endif
+    <form action="{{ route('files.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <input type="file" name="file">
+        <input type="hidden" name="fileable_id" value="{{ $daily_report->id }}">
+        <input type="hidden" name="fileable_type" value="App\Models\DailyReport">
+        <button type="submit">Upload File</button>
+    </form>
+
     <a href="{{ route('daily_reports.edit', $daily_report->id) }}">
         <button>Edit</button>
     </a>
-
     <a href="{{ route('daily_reports.index') }}">
         <button>Back</button>
     </a>

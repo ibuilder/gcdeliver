@@ -7,6 +7,7 @@ use App\Models\ActivityDependency;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class DailyReport extends Model
 {
@@ -34,5 +35,10 @@ class DailyReport extends Model
     public function activityDependencies(): HasMany
     {
         return $this->hasMany(ActivityDependency::class);
+    }
+
+    public function files(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable');
     }
 }

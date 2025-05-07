@@ -96,7 +96,7 @@ class DailyReportController extends Controller
     public function show(string $id)
     {   $this->authorize('view', DailyReport::findOrFail($id));
         $dailyReport = DailyReport::findOrFail($id);
-        return view('daily_reports.show', compact('dailyReport'));
+        return view('daily_reports.show', compact('dailyReport'));        
     }
 
     /**

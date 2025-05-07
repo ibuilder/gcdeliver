@@ -10,6 +10,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FileController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,6 +38,17 @@ Route::middleware(['auth', 'can:is-admin'])->group(function () {
 
 
 Route::middleware(['auth'])->group(function () {
+    // File Routes
+    Route::post('/files', [FileController::class, 'store'])->name('files.store');
+    Route::get('/files/{file}/download', [FileController::class, 'download'])->name('files.download');
+
+    // Comment Routes
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+
+    // Notification Routes
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::patch('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+
     Route::get('/projects/create', [ProjectController::class, 'create'])
                 ->name('projects.create')->middleware('can:manage-projects');
     Route::post('/projects', [ProjectController::class, 'store'])
@@ -48,6 +62,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('projects.items', ItemController::class)->middleware('auth');
         Route::resource('projects.deliveries', DeliveryController::class)->middleware('auth');
         Route::resource('projects.schedules', \App\Http\Controllers\ScheduleController::class)->middleware('auth');
+        
+        // Calendar Events Route
+        Route::get('/projects/{project}/schedules/events', [\App\Http\Controllers\ScheduleController::class, 'calendarEvents'])->name('projects.schedules.events');
     });
 
 

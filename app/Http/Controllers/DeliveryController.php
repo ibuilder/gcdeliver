@@ -1,10 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Gate;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use App\Models\Project;
+use App\Notifications\NewDeliveryNotification;
 use Illuminate\Http\Request;
 use App\Models\Delivery;
 
@@ -18,9 +21,19 @@ class DeliveryController extends Controller
     public function index(Project $project)
     {
         $this->authorize('manage-projects');
-        $deliveries = $project->deliveries;
-        
-        return view('deliveries.index', compact('project', 'deliveries'));
+        $search = request('search');
+
+        if ($search) {
+            $deliveries = $project->deliveries()
+                ->where(function ($query) use ($search) {
+                    $query->where('title', 'like', "%$search%")
+                        ->orWhere('location', 'like', "%$search%")
+                        ->orWhere('notes', 'like', "%$search%");
+                })->get();
+        } else {
+            $deliveries = $project->deliveries()->get();
+        }
+        return view('deliveries.index', compact('project', 'deliveries','search'));
     }
 
     /**
@@ -45,6 +58,10 @@ class DeliveryController extends Controller
         ]);
         try {
             $delivery = $project->deliveries()->create($validatedData);
+            $users = User::all();
+            foreach ($users as $user) {
+                $user->notify(new NewDeliveryNotification($delivery));
+            }
             return redirect()->route('projects.deliveries.index', $project)->with('success', 'Delivery created successfully.');
         } catch (\Exception $e) {
             Log::error('Error creating delivery: ' . $e->getMessage());
@@ -57,7 +74,8 @@ class DeliveryController extends Controller
     public function show(Project $project, Delivery $delivery)
     {
         Gate::authorize('manage-projects');
-        
+        $delivery->load('files');
+
         return view('deliveries.show', compact('project', 'delivery'));
     }
 

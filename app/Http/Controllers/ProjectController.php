@@ -15,9 +15,16 @@ class ProjectController extends Controller
      */
     
     public function index()
-    {
-        $projects = Project::all();
-        return view('projects.index', compact('projects'));
+    {   
+        $search = request('search');
+        $projects = Project::query();
+
+        if ($search) {
+            $projects->where('name', 'LIKE', "%{$search}%")
+                     ->orWhere('description', 'LIKE', "%{$search}%");
+        }
+        
+        return view('projects.index', ['projects' => $projects->get(), 'search' => $search]);
     }
 
 
@@ -50,6 +57,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project): View
     {
+        $project->load(['comments', 'files']);
         return view('projects.show', compact('project'));
     }
 

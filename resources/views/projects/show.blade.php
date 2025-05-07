@@ -92,6 +92,43 @@
         @else
             <p>No users associated with this project.</p>
         @endif
+        
+        <h2>Comments</h2>
+        @if ($project->comments->isNotEmpty())
+            <ul>
+                @foreach ($project->comments as $comment)
+                    <li>
+                        <p>{{ $comment->body }}</p>
+                        <p>by {{ $comment->user->name }}</p>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
+        <form action="{{ route('comments.store') }}" method="POST">
+            @csrf
+            <textarea name="body" required></textarea>
+            <input type="hidden" name="commentable_id" value="{{ $project->id }}">
+            <input type="hidden" name="commentable_type" value="App\Models\Project">            <button type="submit">Add Comment</button>
+        </form>
+
+        <h2>Files</h2>
+        @if ($project->files->isNotEmpty())
+            <ul>
+                @foreach ($project->files as $file)
+                    <li>
+                        <a href="{{ route('files.download', $file) }}">{{ $file->file_name }}</a>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
+        <form action="{{ route('files.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="file" name="file" required>
+            <input type="hidden" name="fileable_id" value="{{ $project->id }}">
+            <input type="hidden" name="fileable_type" value="App\Models\Project">
+            <button type="submit">Upload File</button>
+        </form>
+
 
         <a href="{{ url()->previous() }}">Go Back</a>
     </div>

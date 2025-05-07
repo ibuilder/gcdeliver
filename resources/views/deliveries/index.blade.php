@@ -1,12 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Deliveries for Project: {{ $project->name }}</h1>
+    <h1>Deliveries for Project: {{ $project->name }}</h1>    
+
+    <form action="{{ route('projects.deliveries.index', $project) }}" method="GET">
+        <input type="text" name="search" value="{{ $search ?? '' }}">
+        <button type="submit">Search</button>
+    </form>
 
     <div>
         <a href="{{ route('projects.deliveries.create', $project) }}">Create New Delivery</a>
     </div>
-
+    
     @if ($deliveries->isNotEmpty())
         <ul>
             @foreach ($deliveries as $delivery)
