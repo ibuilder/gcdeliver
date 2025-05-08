@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Project;
 use App\Http\Controllers\Controller;
 use App\Models\DailyReport;
+use App\Notifications\DailyReportSubmittedNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class DailyReportApiController extends Controller
 {
@@ -61,6 +64,10 @@ class DailyReportApiController extends Controller
         ]);
 
         $dailyReport = DailyReport::create($validatedData);
+        
+        $project = $dailyReport->project;
+        $users = $project->users;
+        Notification::send($users, new DailyReportSubmittedNotification($dailyReport));
 
         return response()->json($dailyReport, 201);
     }

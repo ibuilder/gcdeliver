@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\ScheduleUpdatedNotification;
+use Illuminate\Support\Facades\Notification;
 use App\Models\Project;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
@@ -52,6 +54,9 @@ class ScheduleApiController extends Controller
             'end_date' => 'nullable|date',
         ]);
         $schedule->update($validatedData);
+        
+        $users = $project->users;
+        Notification::send($users, new ScheduleUpdatedNotification($schedule));
 
         return response()->json($schedule);
     }

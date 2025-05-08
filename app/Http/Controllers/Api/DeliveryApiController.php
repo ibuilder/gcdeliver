@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Notifications\DeliveryStatusUpdatedNotification;
+use Illuminate\Support\Facades\Notification;
 use App\Models\Delivery;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -75,11 +77,17 @@ class DeliveryApiController extends Controller
             'delivery_date' => 'required|date',
             'status' => 'nullable|string',
         ]);
+        
+        $originalStatus = $delivery->status;
         $delivery->update($validatedData);
 
+        if ($originalStatus !== $delivery->status) {
+            $users = $project->users;
+            Notification::send($users, new DeliveryStatusUpdatedNotification($delivery));
+        }
         return response()->json($delivery);
     }
-
+    }
     /**
      * Remove the specified delivery from storage.
      */
