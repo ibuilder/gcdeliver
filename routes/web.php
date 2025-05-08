@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; // Note: Controller class is usually a base class, not directly used in routes.
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\PartnerController;
@@ -13,6 +13,8 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\ScheduleController; // Added for consistency
+use App\Http\Controllers\HomeController; // Assuming this is the correct namespace
 
 Route::get('/', function () {
     return view('welcome');
@@ -59,9 +61,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
 
     Route::middleware(['can:manage-projects'])->group(function(){
-        Route::resource('projects.items', ItemController::class)->middleware('auth');
-        Route::resource('projects.deliveries', DeliveryController::class)->middleware('auth');
-        Route::resource('projects.schedules', \App\Http\Controllers\ScheduleController::class)->middleware('auth');
+        // Removed redundant ->middleware('auth')
+        Route::resource('projects.items', ItemController::class);
+        Route::resource('projects.deliveries', DeliveryController::class);
+        Route::resource('projects.schedules', ScheduleController::class); // Use imported class
         
         // Project User Management Routes
         Route::get('/projects/{project}/users/manage', [ProjectController::class, 'manageUsers'])->name('projects.users.manage');
@@ -73,7 +76,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/users/{user}/projects/updateAssignments', [UserController::class, 'updateAssignments'])->name('users.projects.updateAssignments');
         });
         // Calendar Events Route
-        Route::get('/projects/{project}/schedules/events', [\App\Http\Controllers\ScheduleController::class, 'calendarEvents'])->name('projects.schedules.events');
+        Route::get('/projects/{project}/schedules/events', [ScheduleController::class, 'calendarEvents'])->name('projects.schedules.events'); // Use imported class
     });
 
 
@@ -84,14 +87,23 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('can:manage-projects');
     
     Route::middleware(['can:manage-users'])->group(function () {
-        Route::resource('users', UserController::class)->middleware('auth');
+        // Removed redundant ->middleware('auth')
+        // This is the primary definition for user management, protected by 'can:manage-users'
+        Route::resource('users', UserController::class); 
     });
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/home', [HomeController::class, 'index'])->name('home'); // Ensured HomeController is used if imported
     
     Route::resource('partners', PartnerController::class);
     
-    Route::resource('users', UserController::class);
-    Route::get('/users/{user}/edit', [UserProfileController::class, 'edit'])->name('user.edit');
-    Route::put('/users/{user}', [UserProfileController::class, 'update'])->name('user.update');
-    Route::get('/users/{user}', [UserProfileController::class, 'show'])->name('user.show');
+    // Remove or consolidate the second Route::resource('users', UserController::class);
+    // The one inside 'can:manage-users' group (line 66 in original) should likely be the sole one.
+    // Route::resource('users', UserController::class); // This line (original line 70) is likely redundant or conflicting
+
+    // Review UserProfileController routes for conflicts with UserController resource routes
+    // If UserProfileController handles specific aspects like the current user's own profile,
+    // consider different route paths (e.g., /profile/edit) to avoid clashes with /users/{id}/edit.
+    // If it's for general user profile viewing/editing by admins, functionality might belong in UserController.
+    Route::get('/users/{user}/profile', [UserProfileController::class, 'show'])->name('user.profile.show'); // Example: Changed path
+    Route::get('/users/{user}/profile/edit', [UserProfileController::class, 'edit'])->name('user.profile.edit'); // Example: Changed path
+    Route::put('/users/{user}/profile', [UserProfileController::class, 'update'])->name('user.profile.update'); // Example: Changed path
 });
