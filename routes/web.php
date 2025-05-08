@@ -55,7 +55,8 @@ Route::middleware(['auth'])->group(function () {
                 ->name('projects.create')->middleware('can:manage-projects');
     Route::post('/projects', [ProjectController::class, 'store'])
                 ->name('projects.store')->middleware('can:manage-projects');
-    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+    //Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+    Route::get('/projects', function () { return view('projects.index'); })->name('projects.index');
     Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit')->middleware('can:manage-projects');
 
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
