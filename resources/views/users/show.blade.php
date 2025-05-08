@@ -28,6 +28,18 @@
         @endcan
 
         <div>
+            <h2>Assigned Projects</h2>
+            @if ($user->projects->isNotEmpty())
+                <ul>
+                    @foreach ($user->projects as $project)
+                        <li><a href="{{ route('projects.show', $project) }}">{{ $project->name }}</a></li>
+                    @endforeach
+                </ul>
+            @else
+                <p>No projects assigned.</p>
+            @endif
+        </div>
+        <div>
             <a href="{{ route('users.index') }}">
                 <button>Back to Users</button>
             </a>

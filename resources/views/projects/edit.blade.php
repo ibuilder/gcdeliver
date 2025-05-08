@@ -23,19 +23,14 @@
                     <div>{{ $message }}</div>
                 @enderror
             </div>
-            
+           <button type="submit">Update Project</button>
+
             @can('manage-projects')
-                <div>
-                    <h2>Assign Users</h2>
-                    @foreach($users as $user)
-                        <div>
-                            <input type="checkbox" name="users[]" value="{{ $user->id }}" {{ $project->users->contains($user) ? 'checked' : '' }}> {{ $user->name }}
-                        </div>
-                    @endforeach
-                </div>
+                <a href="{{ route('projects.users.manage', $project) }}">Manage Users</a>
             @endcan
 
-            <button type="submit">Update Project</button>
+
+
 
         </form>
     </div>

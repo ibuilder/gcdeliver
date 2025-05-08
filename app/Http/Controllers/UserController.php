@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Project;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -69,7 +70,10 @@ class UserController extends Controller
     public function show(User $user)
     {
         //Check if user has the ability to manage users
+
         Gate::authorize('manage-users');
+        //Eager load the projects relationship
+        $user->load('projects');
         return view('users.show', compact('user'));
     }
 
@@ -107,5 +111,17 @@ class UserController extends Controller
         Gate::authorize('manage-users');
         $user->delete();
         return to_route('users.index')->with('success', 'User deleted successfully.');
+    }
+
+    /**
+    * Display the user projects management page.
+    */
+    public function manageProjects(User $user)
+    {
+        Gate::authorize('manage-users');
+
+        $projects = Project::all();
+
+        return view('users.projects.manage', compact('user', 'projects'));
     }
 }

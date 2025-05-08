@@ -63,6 +63,15 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('projects.deliveries', DeliveryController::class)->middleware('auth');
         Route::resource('projects.schedules', \App\Http\Controllers\ScheduleController::class)->middleware('auth');
         
+        // Project User Management Routes
+        Route::get('/projects/{project}/users/manage', [ProjectController::class, 'manageUsers'])->name('projects.users.manage');
+        Route::post('/projects/{project}/users/updateAssignments', [ProjectController::class, 'updateAssignments'])
+            ->name('projects.users.updateAssignments');
+        
+        Route::middleware(['can:manage-users'])->group(function () {
+            Route::get('/users/{user}/projects/manage', [UserController::class, 'manageProjects'])->name('users.projects.manage');
+            Route::post('/users/{user}/projects/updateAssignments', [UserController::class, 'updateAssignments'])->name('users.projects.updateAssignments');
+        });
         // Calendar Events Route
         Route::get('/projects/{project}/schedules/events', [\App\Http\Controllers\ScheduleController::class, 'calendarEvents'])->name('projects.schedules.events');
     });

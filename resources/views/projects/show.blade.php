@@ -7,6 +7,9 @@
         <p>{{ $project->description }}</p>
 
         @can('manage-projects')
+            <a href="{{ route('projects.users.manage', $project) }}">Manage Users</a>
+        @endcan
+        @can('manage-projects')
             <a href="{{ route('projects.edit', $project) }}">Edit Project</a>
         @endcan
 

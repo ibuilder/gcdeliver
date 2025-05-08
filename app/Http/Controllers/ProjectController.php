@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
@@ -57,7 +58,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project): View
     {
-        $project->load(['comments', 'files']);
+        $project = Project::with('users')->findOrFail($project->id);
         return view('projects.show', compact('project'));
     }
 
@@ -96,4 +97,23 @@ class ProjectController extends Controller
         $project->delete();
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
     }
+
+    public function manageUsers(Project $project) : View
+    {
+        Gate::authorize('manage-projects');
+        $users = User::all();
+        return view('projects.users.manage', compact('project', 'users'));
+
+    }
+
+    public function updateAssignments(Request $request, Project $project) : RedirectResponse
+    {
+        Gate::authorize('manage-projects');
+        
+        $selectedUserIds = $request->input('users', []);
+        $project->users()->sync($selectedUserIds);
+
+        return redirect()->route('projects.users.manage', $project)->with('success', 'User assignments updated successfully.');
+    }
+
 }

@@ -54,21 +54,22 @@
       24 => 'App\\Providers\\AuthServiceProvider',
       25 => 'App\\Providers\\EventServiceProvider',
       26 => 'App\\Providers\\RouteServiceProvider',
-      27 => 'App\\Providers\\AuthServiceProvider',
-      28 => 'Laravel\\Ui\\UiServiceProvider',
-      29 => 'App\\Providers\\ActivityDependencyServiceProvider',
-      30 => 'App\\Providers\\AppServiceProvider',
-      31 => 'App\\Providers\\DailyReportServiceProvider',
-      32 => 'App\\Providers\\DeliveryItemServiceProvider',
-      33 => 'App\\Providers\\DeliveryServiceProvider',
-      34 => 'App\\Providers\\ItemPartnerServiceProvider',
-      35 => 'App\\Providers\\ItemServiceProvider',
-      36 => 'App\\Providers\\ManpowerEntryServiceProvider',
-      37 => 'App\\Providers\\PartnerServiceProvider',
-      38 => 'App\\Providers\\ProjectServiceProvider',
-      39 => 'App\\Providers\\RoleServiceProvider',
-      40 => 'App\\Providers\\ScheduleServiceProvider',
-      41 => 'App\\Providers\\UserServiceProvider',
+      27 => 'Spatie\\Permission\\PermissionServiceProvider',
+      28 => 'App\\Providers\\AuthServiceProvider',
+      29 => 'Laravel\\Ui\\UiServiceProvider',
+      30 => 'App\\Providers\\ActivityDependencyServiceProvider',
+      31 => 'App\\Providers\\AppServiceProvider',
+      32 => 'App\\Providers\\DailyReportServiceProvider',
+      33 => 'App\\Providers\\DeliveryItemServiceProvider',
+      34 => 'App\\Providers\\DeliveryServiceProvider',
+      35 => 'App\\Providers\\ItemPartnerServiceProvider',
+      36 => 'App\\Providers\\ItemServiceProvider',
+      37 => 'App\\Providers\\ManpowerEntryServiceProvider',
+      38 => 'App\\Providers\\PartnerServiceProvider',
+      39 => 'App\\Providers\\ProjectServiceProvider',
+      40 => 'App\\Providers\\RoleServiceProvider',
+      41 => 'App\\Providers\\ScheduleServiceProvider',
+      42 => 'App\\Providers\\UserServiceProvider',
     ),
     'aliases' => 
     array (
@@ -642,6 +643,24 @@
         'channel' => NULL,
       ),
     ),
+    'google' => 
+    array (
+      'client_id' => NULL,
+      'client_secret' => NULL,
+      'redirect' => NULL,
+    ),
+    'office365' => 
+    array (
+      'client_id' => NULL,
+      'client_secret' => NULL,
+      'redirect' => NULL,
+    ),
+    'procore' => 
+    array (
+      'client_id' => NULL,
+      'client_secret' => NULL,
+      'redirect' => NULL,
+    ),
   ),
   'session' => 
   array (
@@ -665,6 +684,19 @@
     'http_only' => true,
     'same_site' => 'lax',
     'partitioned' => false,
+  ),
+  'tinker' => 
+  array (
+    'commands' => 
+    array (
+    ),
+    'alias' => 
+    array (
+    ),
+    'dont_alias' => 
+    array (
+      0 => 'App\\Nova',
+    ),
   ),
   'view' => 
   array (
@@ -782,17 +814,46 @@
       ),
     ),
   ),
-  'tinker' => 
+  'permission' => 
   array (
-    'commands' => 
+    'models' => 
     array (
+      'permission' => 'Spatie\\Permission\\Models\\Permission',
+      'role' => 'Spatie\\Permission\\Models\\Role',
     ),
-    'alias' => 
+    'table_names' => 
     array (
+      'roles' => 'roles',
+      'permissions' => 'permissions',
+      'model_has_permissions' => 'model_has_permissions',
+      'model_has_roles' => 'model_has_roles',
+      'role_has_permissions' => 'role_has_permissions',
     ),
-    'dont_alias' => 
+    'column_names' => 
     array (
-      0 => 'App\\Nova',
+      'role_pivot_key' => NULL,
+      'permission_pivot_key' => NULL,
+      'model_morph_key' => 'model_id',
+      'team_foreign_key' => 'team_id',
+    ),
+    'register_permission_check_method' => true,
+    'register_octane_reset_listener' => false,
+    'events_enabled' => false,
+    'teams' => false,
+    'team_resolver' => 'Spatie\\Permission\\DefaultTeamResolver',
+    'use_passport_client_credentials' => false,
+    'display_permission_in_exception' => false,
+    'display_role_in_exception' => false,
+    'enable_wildcard_permission' => false,
+    'cache' => 
+    array (
+      'expiration_time' => 
+      \DateInterval::__set_state(array(
+         'from_string' => true,
+         'date_string' => '24 hours',
+      )),
+      'key' => 'spatie.permission.cache',
+      'store' => 'default',
     ),
   ),
 );
