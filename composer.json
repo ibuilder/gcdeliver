@@ -9,6 +9,7 @@
         "php": ">=8.2",
         "laravel/framework": "^11.0",
         "laravel/pail": "^1.2",
+        "laravel/sanctum": "^4.1",
         "laravel/socialite": "^5.20",
         "laravel/tinker": "^2.10",
         "laravel/ui": "^4.6",
