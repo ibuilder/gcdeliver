@@ -13,8 +13,30 @@ class DailyReportApiController extends Controller
      */
     public function index(Request $request)
     {
-        $dailyReports = DailyReport::all();
-        return response()->json($dailyReports);
+        $query = DailyReport::query();
+
+        // Filtering
+        if ($request->has('filter.project_id')) {
+            $query->where('project_id', $request->input('filter.project_id'));
+        }
+        if ($request->has('filter.report_date')) {
+            $query->where('report_date', $request->input('filter.report_date'));
+        }
+
+        // Sorting
+        if ($request->has('sort')) {
+            $sortFields = explode(',', $request->input('sort'));
+            foreach ($sortFields as $sortField) {
+                $direction = 'asc';
+                if (str_starts_with($sortField, '-')) {
+                    $direction = 'desc';
+                    $sortField = substr($sortField, 1);
+                }
+                if ($sortField === 'report_date') {
+                    $query->orderBy($sortField, $direction);
+                }
+            }}
+        return response()->json($query->paginate($request->input('per_page', 15)));
     }
 
     /**

@@ -11,10 +11,36 @@ class PartnerApiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $partners = Partner::all();
-        return response()->json($partners);
+        $query = Partner::query();
+
+        // Filtering
+        if ($request->has('filter')) {
+            if ($request->filled('filter.name')) {
+                $query->where('name', 'like', '%' . $request->input('filter.name') . '%');
+            }
+            if ($request->filled('filter.contact_person')) {
+                $query->where('contact_person', 'like', '%' . $request->input('filter.contact_person') . '%');
+            }
+            if ($request->filled('filter.email')) {
+                $query->where('email', 'like', '%' . $request->input('filter.email') . '%');
+            }
+            if ($request->filled('filter.phone_number')) {
+                $query->where('phone_number', 'like', '%' . $request->input('filter.phone_number') . '%');
+            }
+        }
+
+        // Sorting
+        if ($request->filled('sort')) {
+            $sortFields = explode(',', $request->input('sort'));
+            foreach ($sortFields as $sortField) {
+                $direction = str_starts_with($sortField, '-') ? 'desc' : 'asc';
+                $query->orderBy(ltrim($sortField, '-'), $direction);
+            }
+        }
+        
+        return response()->json($query->paginate($request->input('per_page', 15)));
     }
 
     /**

@@ -1,4 +1,3 @@
-php
 <?php
 
 namespace App\Http\Controllers\Api;
@@ -16,7 +15,26 @@ class DeliveryApiController extends Controller
      */
     public function index(Project $project): JsonResponse
     {
-        return response()->json($project->deliveries);
+        $query = $project->deliveries();
+
+        // Filtering
+        if ($deliveryDate = request('filter.delivery_date')) {
+            $query->where('delivery_date', $deliveryDate);
+        }
+        if ($status = request('filter.status')) {
+            $query->where('status', $status);
+        }
+
+        // Sorting
+        if ($sort = request('sort')) {
+            $sortFields = explode(',', $sort);
+            foreach ($sortFields as $sortField) {
+                $direction = str_starts_with($sortField, '-') ? 'desc' : 'asc';
+                $field = ltrim($sortField, '-');
+                $query->orderBy($field, $direction);
+            }
+        }
+        return response()->json($query->paginate(request('per_page', 15)));
     }
     
 

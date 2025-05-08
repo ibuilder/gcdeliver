@@ -11,9 +11,27 @@ class ItemApiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Item::all());
+        $query = Item::query();
+
+        // Filtering
+        if ($request->has('filter.name')) {
+            $query->where('name', 'like', '%' . $request->input('filter.name') . '%');
+        }
+        if ($request->has('filter.description')) {
+            $query->where('description', 'like', '%' . $request->input('filter.description') . '%');
+        }
+
+        // Sorting
+        if ($request->has('sort')) {
+            $sortFields = explode(',', $request->input('sort'));
+            foreach ($sortFields as $sortField) {
+                $direction = strpos($sortField, '-') === 0 ? 'desc' : 'asc';
+                $query->orderBy(ltrim($sortField, '-'), $direction);
+            }
+        }
+        return response()->json($query->paginate($request->input('per_page', 15)));
     }
 
     /**
