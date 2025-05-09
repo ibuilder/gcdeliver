@@ -15,9 +15,9 @@ class ProjectController extends Controller
      * Display a listing of the resource.
      */
     
-    public function index()
+    public function index(Request $request)
     {   
-        $search = request('search');
+        $search = $request->input('search');
         $projects = Project::query();
 
         if ($search) {

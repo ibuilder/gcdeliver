@@ -25,7 +25,16 @@
         <button id="apply-filters-sort">Apply</button>
     </div>
     <div id="projects-list">
-        
+        @foreach($projects as $project)
+            <a href="{{ route('projects.show', $project->id) }}">
+                <div>
+                    <h2>{{ $project->name }}</h2>
+                    <p>{{ $project->description }}</p>
+                    <p>Status: {{ $project->status ?? 'N/A' }}</p>
+                    <p>Start Date: {{ $project->start_date ?? 'N/A' }}, End Date: {{ $project->end_date ?? 'N/A' }}</p>
+                </div>
+            </a>
+        @endforeach
     </div>
 </div>
 <style>
@@ -116,11 +125,11 @@
     
 
     document.addEventListener('DOMContentLoaded', function () {
-        const url = new URL('/api/projects', window.location.origin);
-        const params = new URLSearchParams();
-        if (filterStatus.value) params.append('filter[status]', filterStatus.value);
-        if (sortField.value) params.append('sort', (sortDirection.value === 'desc' ? '-' : '') + sortField.value);
-        url.search = params.toString();
-        fetchProjects(url.toString());
+        // const url = new URL('/api/projects', window.location.origin);
+        // const params = new URLSearchParams();
+        // if (filterStatus.value) params.append('filter[status]', filterStatus.value);
+        // if (sortField.value) params.append('sort', (sortDirection.value === 'desc' ? '-' : '') + sortField.value);
+        // url.search = params.toString();
+        // fetchProjects(url.toString());
     });
 </script>

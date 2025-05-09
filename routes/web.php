@@ -16,9 +16,9 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\ScheduleController; // Added for consistency
 use App\Http\Controllers\HomeController; // Assuming this is the correct namespace
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', function () { 
+    return view('projects.index'); 
+}) ;
 Auth::routes();
 
 // Socialite Routes
